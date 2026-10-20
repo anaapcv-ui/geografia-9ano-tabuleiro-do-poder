@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leitura Guiada · Tabuleiro do Poder · Geografia 9º</title>
+<style>
+  :root{
+    --palco:#10141c; --palco2:#171d28; --aco:#28324a; --aco2:#3a4766;
+    --ouro:#f2b84b; --verde:#3ddc97; --verm:#ff5d6c; --ciano:#38bdf8;
+    --vermelho:#ff5d6c; --texto:#edf1f8; --cinza:#94a0b8; --postit:#ffe88a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:
+    repeating-linear-gradient(45deg,rgba(255,255,255,.015) 0 22px,transparent 22px 44px),
+    radial-gradient(1100px 480px at 50% -10%,#1d2740,#10141c 60%),var(--palco);
+    color:var(--texto);line-height:1.6;padding-bottom:60px}
+  header{background:linear-gradient(120deg,#13261f,#1b2236 50%,#2a1a22);padding:26px 18px;text-align:center;
+    box-shadow:0 4px 18px rgba(0,0,0,.5);border-bottom:4px solid var(--ouro)}
+  header .selo{font-size:.78rem;letter-spacing:2px;color:#f6deaa;text-transform:uppercase}
+  header h1{font-size:1.5rem;margin:6px 0 2px}
+  header p{color:#d5dcea;font-size:.92rem}
+  .wrap{max-width:820px;margin:0 auto;padding:16px}
+  .barra-nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+  .barra-nav a{background:var(--palco2);color:var(--texto);text-decoration:none;padding:7px 12px;
+    border-radius:20px;font-size:.85rem;border:1px solid var(--aco)}
+  .barra-nav a.on{background:var(--ouro);color:#2a1c00;font-weight:bold}
+  .barra-nav a.lock{opacity:.5}
+  .intro{background:var(--palco2);border:1px solid var(--aco);border-radius:14px;padding:16px;margin-bottom:16px}
+  .intro h2{color:var(--ouro);font-size:1.1rem;margin-bottom:8px}
+  .intro ol{margin:8px 0 0 20px}
+  .legenda{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:.8rem}
+  .legenda span{padding:3px 10px;border-radius:12px;font-weight:bold}
+  .lg-fin{background:#0f3328;color:var(--verde)} .lg-les{background:#3d1820;color:var(--verm)} .lg-sep{background:#0e2c40;color:var(--ciano)}
+  .painel{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;
+    background:var(--palco2);border:1px solid var(--aco);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:.85rem}
+  .painel .btns{display:flex;gap:6px;flex-wrap:wrap}
+  button{cursor:pointer;font-family:inherit}
+  .mini{background:var(--palco);color:var(--texto);border:1px solid var(--aco2);border-radius:8px;padding:6px 10px;font-size:.8rem}
+  .mini:hover{background:#1c2436}
+  .parte{margin:26px 0 12px;padding:10px 14px;border-radius:12px;font-weight:bold;font-size:.95rem;letter-spacing:.3px;border:1px dashed var(--aco2);background:#141a26}
+  .parte.fin{color:var(--verde);border-color:var(--verde)} .parte.les{color:var(--verm);border-color:var(--verm)} .parte.sep{color:var(--ciano);border-color:var(--ciano)}
+  .bloco{background:var(--palco2);border:1px solid var(--aco);border-radius:16px;margin-bottom:18px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.35)}
+  .bloco.travado{opacity:.55}
+  .bloco-cab{display:flex;align-items:center;gap:12px;padding:14px 16px;background:linear-gradient(90deg,#1a2132,#20293d);border-bottom:1px solid var(--aco)}
+  .bloco-cab .num{background:var(--verde);color:#032418;font-weight:bold;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:inset 0 0 0 3px rgba(0,0,0,.25)}
+  .bloco.les .bloco-cab .num{background:var(--verm);color:#2b0509}
+  .bloco.sep .bloco-cab .num{background:var(--ciano);color:#031f2e}
+  .bloco-cab h3{font-size:1.06rem;color:#fff}
+  .bloco-cab .porto{font-size:.7rem;color:var(--cinza);letter-spacing:1px;text-transform:uppercase}
+  .bloco-corpo{padding:16px}
+  .texto p{margin-bottom:10px}
+  .texto ul{margin:0 0 10px 20px}
+  .texto li{margin-bottom:5px}
+  .texto .destaque{color:var(--verde);font-weight:bold}
+  .bloco.les .texto .destaque{color:var(--verm)}
+  .bloco.sep .texto .destaque{color:var(--ciano)}
+  .olhar{background:#262414;border-left:3px solid var(--postit);padding:8px 12px;margin:0 0 10px;border-radius:0 8px 8px 0;font-size:.92rem}
+  .olhar b{color:var(--postit)}
+  .cadeado{padding:22px 16px;text-align:center;color:var(--cinza);font-size:.9rem}
+  .perg{background:#121722;border:1px solid var(--aco);border-radius:12px;padding:12px;margin-top:14px}
+  .perg.red{border-color:var(--vermelho);box-shadow:0 0 0 1px var(--vermelho)}
+  .perg .tag{display:inline-block;font-size:.66rem;text-transform:uppercase;letter-spacing:1px;padding:2px 8px;border-radius:10px;margin-bottom:6px}
+  .tag.conc{background:#0e2c40;color:#9bd8f7}
+  .tag.apl{background:#3a2e10;color:#f6d38e}
+  .perg label{display:block;font-weight:600;margin-bottom:8px}
+  .perg textarea{width:100%;min-height:70px;background:#0b0f17;color:var(--texto);border:1px solid var(--aco2);border-radius:8px;padding:9px;font-family:inherit;font-size:.95rem;resize:vertical}
+  .aviso{margin-top:8px;padding:9px 11px;border-radius:8px;font-size:.85rem;display:none}
+  .aviso.amarelo{display:block;background:#4a3d12;border:1px solid var(--ouro);color:#ffe9ad}
+  .aviso.vermelho{display:block;background:#4a1717;border:1px solid var(--vermelho);color:#ffc9c9}
+  .modelo{margin-top:10px;padding:10px 12px;background:#0e2b22;border:1px solid var(--verde);border-radius:8px;font-size:.9rem;display:none}
+  .modelo.show{display:block}
+  .modelo .lab{color:#8fe8c0;font-weight:bold;font-size:.78rem;text-transform:uppercase;letter-spacing:1px}
+  .chk{margin-top:10px;font-size:.88rem}
+  .chk .item{display:flex;align-items:center;gap:8px;margin:6px 0;flex-wrap:wrap}
+  .chk .item span{flex:1;min-width:180px}
+  .chk .simnao button{border:1px solid var(--aco2);background:#0b0f17;color:var(--texto);border-radius:6px;padding:4px 10px;margin-left:4px;font-size:.8rem}
+  .chk .simnao button.sim.ativo{background:var(--verde);border-color:var(--verde);color:#032418}
+  .chk .simnao button.nao.ativo{background:var(--vermelho);border-color:var(--vermelho);color:#fff}
+  .conferir{margin-top:14px;background:var(--ouro);color:#2a1c00;border:none;border-radius:10px;padding:11px 18px;font-size:1rem;font-weight:bold;width:100%}
+  .conferir:disabled{background:#1c2436;color:#6c7891;cursor:not-allowed}
+  .status-bloco{margin-top:10px;text-align:center;font-weight:bold;font-size:.95rem}
+  .prox{margin-top:12px;text-align:center}
+  .prox a{color:var(--ouro);text-decoration:none;font-weight:bold}
+  .peg{background:#3a1419;border:2px solid var(--vermelho);border-radius:16px;padding:16px;margin-top:20px}
+  .peg h3{color:#ffb3bb;margin-bottom:10px}
+  .peg ol{margin-left:20px}
+  .peg li{margin-bottom:7px}
+  .cobertura{background:var(--palco2);border:1px solid var(--aco);border-radius:16px;padding:16px;margin-top:18px}
+  .cobertura h3{color:var(--ouro);margin-bottom:10px}
+  table{width:100%;border-collapse:collapse;font-size:.85rem}
+  th,td{border:1px solid var(--aco);padding:7px 9px;text-align:left}
+  th{background:#1a2132}
+  .revisar{background:#3a2e06;border:2px solid var(--ouro);border-radius:16px;padding:16px;margin-top:18px}
+  .revisar h3{color:var(--ouro);margin-bottom:8px}
+  .revisar ul{margin-left:18px}
+  .relatorio{background:var(--palco2);border:1px dashed var(--verde);border-radius:14px;padding:16px;margin-top:18px;font-size:.9rem}
+  .relatorio h3{color:var(--verde);margin-bottom:8px}
+  .trilha-fim{background:linear-gradient(120deg,#12261f,#163a2c);border:2px solid var(--verde);border-radius:16px;padding:18px;margin-top:18px;text-align:center}
+  .trilha-fim h3{color:#8fe8c0;margin-bottom:8px}
+  .trilha-fim a.btn{display:inline-block;margin-top:8px;background:var(--verde);color:#032418;text-decoration:none;font-weight:bold;padding:11px 20px;border-radius:10px}
+  .trilha-fim a.btn.off{background:#1c2436;color:#6c7891;pointer-events:none}
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:50;align-items:center;justify-content:center;padding:16px}
+  .modal-bg.show{display:flex}
+  .modal{background:var(--palco2);border:1px solid var(--ouro);border-radius:14px;padding:20px;max-width:420px;text-align:center}
+  .modal p{margin-bottom:14px}
+  .modal button{background:var(--ouro);color:#2a1c00;border:none;border-radius:8px;padding:9px 16px;font-weight:bold}
+  .rodape{text-align:center;color:var(--cinza);font-size:.8rem;margin-top:24px}
+</style>
+</head>
+<body>
+<header>
+  <div class="selo">Tabuleiro do Poder · Geografia 9º ano · CCF</div>
+  <h1>📖 Leitura Guiada — Manual das Jogadas</h1>
+  <p>Capítulos 16, 17 e 18 · Prova 23/10 · Callis Geografia 9 – Livro 2 (pp. 58–118)</p>
+</header>
+
+<div class="wrap">
+  <nav class="barra-nav" id="nav">
+    <a class="on" href="leitura-guiada.html">📖 Leitura Guiada</a>
+    <a href="quiz.html" data-etapa="quiz">🎯 Quiz</a>
+    <a href="resumo.html" data-etapa="resumo">🗺️ Resumo</a>
+    <a href="simulado.html" data-etapa="simulado">📝 Simulado</a>
+    <a href="index.html">🏠 Início</a>
+  </nav>
+
+  <div class="intro">
+    <h2>♟️ Bem-vindo(a) ao Tabuleiro do Poder</h2>
+    <p>O mundo é um grande tabuleiro: de um lado, as <b>fichas do dinheiro</b> circulando entre bancos e bolsas; do outro, <b>peças</b> (países e povos) disputando território e identidade. Cada bloco é uma <b>Jogada</b>. São <b>14 jogadas</b> em três tabuleiros: <b style="color:var(--verde)">Jogadas 1–5</b> (Cap. 16), <b style="color:var(--verm)">Jogadas 6–10</b> (Cap. 17) e <b style="color:var(--ciano)">Jogadas 11–14</b> (Cap. 18). A próxima jogada só abre quando você conferir a anterior.</p>
+    <ol>
+      <li>Leia a jogada com calma (tudo aqui vem do seu livro).</li>
+      <li>Responda as 3 perguntas <b>escrevendo</b> com as suas palavras (não vale copiar o texto).</li>
+      <li>Clique em <b>Conferir</b>: aparece a resposta-modelo e uma autoavaliação Sim/Não.</li>
+      <li>Com as 14 jogadas conferidas e a autoavaliação respondida, o <b>🎯 Quiz destrava</b>.</li>
+    </ol>
+    <div class="legenda"><span class="lg-fin">🪙 Cap. 16 · dinheiro</span><span class="lg-les">⚔️ Cap. 17 · Rússia e crise europeia</span><span class="lg-sep">🧩 Cap. 18 · separatismos</span></div>
+  </div>
+
+  <div class="painel">
+    <span id="salvo">💾 Progresso salvo automaticamente.</span>
+    <div class="btns">
+      <button class="mini" onclick="exportar()">📥 Exportar</button>
+      <button class="mini" onclick="document.getElementById('imp').click()">📤 Importar</button>
+      <input type="file" id="imp" accept="application/json" style="display:none" onchange="importar(event)">
+      <button class="mini" onclick="pedirZerar()">🗑️ Zerar tudo</button>
+    </div>
+  </div>
+
+  <div id="blocos"></div>
+
+  <div class="peg">
+    <h3>⚠️ 10 Pegadinhas da Prova (não caia nelas!)</h3>
+    <ol>
+      <li><b>Lastro × inflação:</b> lastro é o ouro/prata guardado que garante a moeda. Inflação é a <b>perda da capacidade de compra</b> quando se imprime dinheiro além do que as reservas garantem.</li>
+      <li><b>Bretton Woods (1944)</b> criou o padrão <b>dólar-ouro</b> (35 dólares = 1 onça), o <b>FMI</b> e o <b>Bird (Banco Mundial)</b>. Não confunda: FMI socorre países em crise; Bird financiou a reconstrução e hoje o desenvolvimento.</li>
+      <li><b>Setor comercial NÃO produz:</b> ele distribui o que outros produziram. Quem financia os outros setores é o <b>financeiro</b>.</li>
+      <li><b>Comprar título da dívida pública = emprestar dinheiro ao governo.</b> Comprar ação = virar dono de uma fração de uma <b>empresa</b>.</li>
+      <li><b>Especulação ≠ valorização real:</b> na especulação o preço sobe <b>sem</b> a empresa crescer — forma-se a bolha, que estoura.</li>
+      <li><b>Opacidade</b> é falta de transparência (sigilo), não "segurança contra o crime". Ela favorece corrupção, crime organizado e evasão fiscal.</li>
+      <li><b>Chechênia:</b> 1ª guerra = <b>Yeltsin</b> (1994-1996); 2ª guerra = <b>Putin</b> (a partir de 1999). A Chechênia é muçulmana sunita e fica no <b>Cáucaso do Norte</b>.</li>
+      <li><b>Crimeia (2014)</b> foi anexada após referendo; <b>Donetsk e Lugansk</b> ficam no <b>leste</b> da Ucrânia, onde começou uma guerra civil em 2014. A invasão total foi em <b>24/02/2022</b>.</li>
+      <li><b>Maastricht:</b> déficit <b>abaixo de 3%</b> e dívida de <b>no máximo 60%</b> do PIB. E o Reino Unido <b>nunca usou o euro</b> nem fez parte de Schengen.</li>
+      <li><b>Brexit NÃO é separatismo</b> (é a saída de um país de um bloco), mas <b>pode reacender</b> separatismos na Escócia e na Irlanda do Norte. A Iugoslávia virou <b>seis</b> países.</li>
+    </ol>
+  </div>
+
+  <div class="cobertura">
+    <h3>🧭 Cobertura: Tópico → Jogada</h3>
+    <table>
+      <thead><tr><th>Tópico da prova</th><th>Páginas (Callis Geografia 9 – L2)</th><th>Jogada</th></tr></thead>
+      <tbody>
+        <tr><td>Financeirização; equivalentes universais; moedas e cédulas; lastro; padrão-ouro; inflação</td><td>59–61</td><td>1</td></tr>
+        <tr><td>2ª Guerra e o ouro dos EUA; Bretton Woods; padrão dólar-ouro; FMI; Bird/Banco Mundial; multilaterais; neoliberalismo</td><td>61–62</td><td>2</td></tr>
+        <tr><td>Bancos (origem e função); juros; investimentos; sistema financeiro: setores produtivo, comercial e financeiro; crédito; Estado</td><td>63–67</td><td>3</td></tr>
+        <tr><td>Bolsas de valores; ações e títulos; dividendos; especulação e bolha; títulos da dívida pública; Banco Central</td><td>67–70</td><td>4</td></tr>
+        <tr><td>Paraísos fiscais; opacidade; lavagem de dinheiro; mercado 24 horas; ataque especulativo</td><td>71–72, 75</td><td>5</td></tr>
+        <tr><td>Exterior próximo; minorias russas; Mar Negro; Rússia pós-URSS e BRICS</td><td>79–81</td><td>6</td></tr>
+        <tr><td>A questão da Chechênia (1ª e 2ª guerras, terrorismo, disputa no presente)</td><td>81–84</td><td>7</td></tr>
+        <tr><td>Conflito da Crimeia (1954, 2013-2014, referendo, sanções)</td><td>85–87</td><td>8</td></tr>
+        <tr><td>Caso de Donetsk; aspectos em comum; guerra de 2022</td><td>84, 88–90</td><td>9</td></tr>
+        <tr><td>Crise na Zona do Euro (Maastricht, crise de 2008, Grécia, austeridade); Brexit</td><td>91–94</td><td>10</td></tr>
+        <tr><td>Estados nacionais; nação; fronteiras; fragmentação dos impérios; microestados; separatismo</td><td>101–104</td><td>11</td></tr>
+        <tr><td>Fragmentação da Iugoslávia; povos eslavos; Tito; Guerra da Bósnia; Kosovo</td><td>104–107</td><td>12</td></tr>
+        <tr><td>Separatismos na Espanha: Catalunha e País Basco (ETA)</td><td>107–111</td><td>13</td></tr>
+        <tr><td>Separatismos no Reino Unido (Escócia, Irlanda do Norte, IRA); terrorismo na Europa</td><td>112–115</td><td>14</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="revisar" id="revisar" style="display:none">
+    <h3>🔁 Para revisar antes da prova</h3>
+    <ul id="revisar-lista"></ul>
+  </div>
+
+  <div class="relatorio">
+    <h3>📊 Para os pais (resumo desta leitura)</h3>
+    <div id="rel-conteudo">Assim que o aprendiz for conferindo as jogadas, o resumo aparece aqui.</div>
+  </div>
+
+  <div class="trilha-fim" id="trilha-fim">
+    <h3>🔒 Próxima etapa: Quiz</h3>
+    <p id="trilha-fim-txt">O Quiz destrava quando as 14 jogadas estiverem conferidas e a autoavaliação respondida.</p>
+    <a class="btn off" id="btn-prox" href="quiz.html">🎯 Ir para o Quiz</a>
+  </div>
+
+  <div class="rodape">Feito com carinho para o jovem aprendiz. ♟️ Boa partida — e boa prova!</div>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <p id="modal-txt"></p>
+    <button onclick="fecharModal()" id="modal-ok">Ok</button>
+    <button class="mini" onclick="fecharModal()" id="modal-cancel" style="display:none;margin-left:8px">Cancelar</button>
+  </div>
+</div>
+
+<script>
+/* ====== TRILHA COM CADEADOS (módulo comum do kit) ====== */
+var KIT='tabuleiro_poder_geo9';
+var TRILHA=[
+ {id:'leitura', chave:KIT+'_leitura_v1', nome:'Leitura Guiada', arquivo:'leitura-guiada.html', emoji:'📖'},
+ {id:'quiz', chave:KIT+'_quiz_v1', nome:'Quiz', arquivo:'quiz.html', emoji:'🎯'},
+ {id:'resumo', chave:KIT+'_resumo_v1', nome:'Resumo', arquivo:'resumo.html', emoji:'🗺️'},
+ {id:'simulado', chave:KIT+'_simulado_v1', nome:'Simulado', arquivo:'simulado.html', emoji:'📝'}
+];
+function lerJSON(k){ try{ var s=localStorage.getItem(k); return s?JSON.parse(s):null; }catch(e){ return null; } }
+function trilhaLiberada(){ var t=lerJSON(KIT+'_trilha_v1'); return !!(t&&t.liberadoPelosPais); }
+function etapaConcluida(id){ var e=TRILHA.filter(function(t){return t.id===id;})[0]; var d=lerJSON(e.chave); return !!(d&&d.concluido); }
+function podeAbrir(id){ var idx=TRILHA.map(function(t){return t.id;}).indexOf(id); if(idx<=0||trilhaLiberada()) return true; return etapaConcluida(TRILHA[idx-1].id); }
+function marcarNav(){
+  var links=document.querySelectorAll('#nav a[data-etapa]');
+  for(var i=0;i<links.length;i++){ var id=links[i].getAttribute('data-etapa'); if(!podeAbrir(id)){ links[i].classList.add('lock'); links[i].textContent='🔒 '+links[i].textContent.replace('🔒 ',''); links[i].setAttribute('title','Ainda trancado'); } else { links[i].classList.remove('lock'); links[i].textContent=links[i].textContent.replace('🔒 ',''); } }
+}
+
+
+/* ====== JOGADAS (conteúdo do livro Callis Geografia 9 – Livro 2, Caps 16, 17 e 18) ====== */
+var BLOCOS = [
+ {
+  porto:"Jogada 01 · Capítulo 16 · Tabuleiro do Dinheiro", emoji:"🪙", u:"fin", parte:"Tabuleiro 1 · O jogo do dinheiro (Cap. 16 — Globalização do mercado financeiro)",
+  titulo:"Do escambo ao padrão-ouro",
+  texto:[
+   "Antes do dinheiro, as pessoas trocavam mercadoria por mercadoria — por exemplo, <b>trigo por tecido</b>. Com as trocas ficando mais frequentes, ficou difícil decidir o que era uma troca justa: nem sempre quem tinha trigo queria tecido. Por isso surgiram os <span class='destaque'>equivalentes universais</span>: produtos aceitos pela grande maioria para facilitar as trocas, como o <b>sal</b>, o <b>couro</b> e os <b>metais preciosos</b> (ouro, prata e bronze, valorizados pela raridade). O importante era que esse \"dinheiro\" <b>não estragasse</b>.",
+   "No <b>capitalismo comercial</b>, os metais preciosos viraram <b>moedas cunhadas</b>. No <b>século XIX</b>, as trocas cresceram tanto que não dava mais para fazer todo o dinheiro de ouro ou prata: surgiram moedas de metais comuns e as <span class='destaque'>cédulas</span> de papel.",
+   "Para um pedaço de papel valer alguma coisa, o <b>Estado</b> passou a ter a <b>exclusividade</b> de fabricar moedas e cédulas. Como garantia, o governo precisava ter <b>reservas de ouro ou de prata</b>. Esse metal guardado, que funciona como o valor por trás do dinheiro, é o <span class='destaque'>lastro da moeda</span>.",
+   "No <span class='destaque'>padrão-ouro</span>, cada governo deveria ter ouro acumulado para garantir sua moeda: quanto mais ouro guardado, mais valor e confiança. Em teoria, só se imprimia mais dinheiro juntando mais ouro. Na prática, muitos países imprimiam <b>mais dinheiro do que as reservas permitiam</b>, e a moeda se desvalorizava: o dinheiro passava a comprar menos. Essa perda da capacidade de compra é a <span class='destaque'>inflação</span>.",
+   "<div class='olhar'><b>Ficha extra:</b> em Fort Knox, os Estados Unidos guardam cerca de <b>5 mil toneladas de ouro</b> (uns 240 bilhões de dólares) como lastro permanente do dólar. O padrão-ouro foi substituído pelo dólar, mas o ouro ainda serve de base para a quantidade de dólares em circulação.</div>"
+  ],
+  perguntas:[
+   {tag:"conc",q:"O que é o lastro da moeda e por que ele dava confiança ao dinheiro de papel?",modelo:"Lastro é a reserva de ouro ou prata que o governo guarda para garantir o valor do dinheiro que imprime. Como havia metal valioso 'por trás' das cédulas, as pessoas aceitavam o papel como dinheiro.",chk:["Disse que lastro é uma reserva de ouro/prata do governo?","Liguei o lastro à confiança (garantia do valor do papel)?"]},
+   {tag:"apl",q:"Numa vila, um pescador quer trocar peixe por sapatos, mas o sapateiro não quer peixe. Explique o problema e como um equivalente universal resolveria.",modelo:"O problema é que a troca direta só funciona se os dois quiserem o produto um do outro, e o peixe ainda estraga. Com um equivalente universal (como sal ou metal), que todos aceitam e que não estraga, o pescador vende o peixe a quem quiser, recebe esse 'dinheiro' e paga o sapateiro.",chk:["Expliquei que a troca direta falha quando o outro não quer o produto?","Disse que o equivalente universal é aceito por todos (e não estraga)?"]},
+   {tag:"apl",q:"Um governo tem pouco ouro guardado, mas resolve imprimir o dobro de cédulas. O que tende a acontecer com o preço do pão? Use a palavra inflação.",modelo:"Com muito mais dinheiro do que a reserva garante, a moeda se desvaloriza: cada nota passa a comprar menos. O pão fica mais caro em dinheiro. Isso é inflação, a perda da capacidade de compra.",chk:["Disse que imprimir além das reservas desvaloriza a moeda?","Usei 'inflação' como perda da capacidade de compra (preços subindo)?"]}
+  ]
+ },
+ {
+  porto:"Jogada 02 · Capítulo 16 · Tabuleiro do Dinheiro", emoji:"🏦", u:"fin",
+  titulo:"Bretton Woods: o dólar vira a ficha do mundo",
+  texto:[
+   "Na <b>Segunda Guerra Mundial</b>, a maioria dos países desenvolvidos imprimiu mais dinheiro e gastou suas reservas de ouro para comprar comida, roupas, matéria-prima e combustíveis. A exceção foram os <b>Estados Unidos</b>: vendendo muitos produtos para a Europa, <b>acumularam ouro</b>. No fim da guerra, a maior parte do ouro usado como lastro estava com eles — o <b>dólar se valorizou</b> e as outras moedas se desvalorizaram.",
+   "No final de <b>1944</b>, os EUA e seus aliados se reuniram na <span class='destaque'>Conferência de Bretton Woods</span> para estabilizar o sistema financeiro internacional. Ali nasceu o <span class='destaque'>padrão dólar-ouro</span>: <b>35 dólares compravam 1 onça de ouro</b> (onça = 28,35 gramas). O dólar virou moeda de uso internacional — uma enorme vantagem para os EUA.",
+   "Em Bretton Woods também nasceu o <span class='destaque'>Fundo Monetário Internacional (FMI)</span>, que empresta dinheiro a países em crise financeira, principalmente os muito endividados. A ideia inicial era ajudar a controlar as contas e evitar a desvalorização das moedas, mas o FMI ganhou grande influência sobre esses países. Suas condições: <b>cortar gastos</b> (mesmo em educação e saúde) e fazer <b>abertura comercial e financeira</b>, com menos regras para a entrada e a saída de capital estrangeiro. O lado ruim: o país fica exposto a <b>investimentos especulativos</b>, que entram e saem rapidamente e descontrolam as contas.",
+   "A outra instituição criada lá foi o <span class='destaque'>Banco Internacional para a Reconstrução e o Desenvolvimento (Bird)</span>, o <b>Banco Mundial</b>. Primeiro financiou a reconstrução do <b>Japão e da Europa Ocidental</b>, arrasados pela guerra; hoje financia programas de desenvolvimento na <b>América Latina, na Ásia e na África</b>. FMI e Bird são organismos <span class='destaque'>multilaterais</span> (envolvem vários países).",
+   "<div class='olhar'><b>Leitura de jogador:</b> globalização é a aceleração das trocas, mas <b>não é um jogo igualitário</b>. O padrão dólar-ouro beneficiou mais os EUA, e as exigências do FMI protegeram mais os investidores do que os cidadãos. Essas exigências combinam com o <b>neoliberalismo</b>: o governo interfere menos na economia, investe menos em infraestrutura e desmonta o Estado de bem-estar social.</div>"
+  ],
+  perguntas:[
+   {tag:"conc",q:"Por que, no fim da Segunda Guerra, o dólar ficou tão forte em relação às outras moedas?",modelo:"Porque os EUA venderam produtos para a Europa durante a guerra e juntaram muito ouro, enquanto os outros gastavam o seu. Com a maior parte do ouro-lastro nas mãos dos EUA, o dólar se valorizou.",chk:["Disse que os EUA acumularam ouro (vendendo à Europa)?","Disse que os outros países gastaram suas reservas?"]},
+   {tag:"apl",q:"Um país inventado, Valdória, está endividado e pede empréstimo ao FMI. Cite duas exigências que ele provavelmente vai receber e um efeito disso na vida da população.",modelo:"Valdória teria de cortar gastos públicos e abrir a economia ao capital estrangeiro, com menos regras. Para a população, isso pode significar menos dinheiro para escolas e hospitais, e o país fica exposto a investidores especulativos que tiram o dinheiro de repente.",chk:["Citei duas exigências (cortar gastos / abertura comercial e financeira)?","Dei um efeito na população (menos saúde/educação ou instabilidade)?"]},
+   {tag:"apl",q:"Explique para um colega mais novo a diferença entre o FMI e o Banco Mundial (Bird), dando um exemplo de quem cada um ajudou.",modelo:"O FMI empresta para países em crise financeira, endividados, para controlarem as contas e não verem a moeda despencar. O Banco Mundial nasceu para reconstruir o Japão e a Europa Ocidental depois da guerra e hoje financia projetos de desenvolvimento na América Latina, na Ásia e na África (até obra no Brasil, como o Rodoanel).",chk:["Disse que o FMI socorre países em crise/endividados?","Disse que o Bird financia reconstrução/desenvolvimento, com um exemplo?"]}
+  ]
+ },
+ {
+  porto:"Jogada 03 · Capítulo 16 · Tabuleiro do Dinheiro", emoji:"🧾", u:"fin",
+  titulo:"Os três setores e o banco no meio do tabuleiro",
+  texto:[
+   "A economia mundial se apoia em <b>três setores que se completam</b>. O <span class='destaque'>setor produtivo</span> produz bens ou presta serviços (uma granja, uma fábrica de calçados, um hotel). O <span class='destaque'>setor comercial</span> distribui bens e serviços feitos por outros (uma loja de roupas, um supermercado, um cinema, uma agência de turismo). O <span class='destaque'>setor financeiro</span> <b>custeia o mercado</b>: empresta dinheiro para os outros dois investirem, por exemplo, em máquinas novas.",
+   "<span class='destaque'>Crédito</span> é a liberação de dinheiro para uma pessoa ou empresa — ou o financiamento de uma compra: você leva o bem agora e paga depois, num prazo. Não serve só para imóveis e carros: muita gente compra eletrodomésticos e até comida a crédito. O <b>Estado</b> também usa crédito: paga funcionários, saneamento, estradas, escolas, saúde e segurança com <b>impostos</b>, mas, quando a obra é grande, pega empréstimos (o Rodoanel de São Paulo tem financiamento do Banco Mundial).",
+   "Os <span class='destaque'>bancos</span> guardam dinheiro e valores e fazem empréstimos. Atividades parecidas já existiam entre <b>babilônios e fenícios</b>, mas o banco como conhecemos surgiu no <b>capitalismo comercial (séculos XV a XVIII)</b>, em cidades como Veneza e Londres. Com as <b>Grandes Navegações</b>, era preciso guardar dinheiro e financiar viagens ao Oriente; na <b>Revolução Industrial</b>, os empréstimos ajudaram a industrialização e a urbanização, e a sociedade passou da economia de subsistência para a <b>economia de mercado</b>.",
+   "Como o banco lucra? Ele usa parte do dinheiro guardado para <b>emprestar</b> e cobra <span class='destaque'>juros</span> — uma porcentagem do valor emprestado. É uma cadeia: <b>mais clientes → mais empréstimos → mais juros</b>. Para atrair correntistas, oferece <b>investimentos</b>, cujos rendimentos são uma parte dos juros que ele recebe. Hoje muita gente prefere aplicar no banco a abrir um negócio. Os governos intervieram mais na economia no auge do modelo <b>keynesiano</b> e menos com o <b>neoliberalismo</b>; e o fordismo e o toyotismo criaram a <b>sociedade de consumo</b>, com compras facilitadas pelo crédito.",
+   "<div class='olhar'><b>Curiosidade de História:</b> na Idade Média, o banqueiro pesava as moedas nas trocas. O nome \"banco\" veio dos banqueiros judeus de Florença, por causa da <b>mesa</b> onde faziam as trocas de moedas.</div>"
+  ],
+  perguntas:[
+   {tag:"apl",q:"Classifique no setor certo e justifique: (a) uma fábrica de bicicletas; (b) a loja que revende essas bicicletas; (c) a instituição que empresta dinheiro para a fábrica comprar máquinas.",modelo:"(a) Setor produtivo, porque fabrica um bem. (b) Setor comercial, porque distribui o que outro produziu. (c) Setor financeiro, porque financia os outros setores com empréstimos.",chk:["Acertei: fábrica = produtivo, loja = comercial, banco = financeiro?","Justifiquei pelo que cada um faz (produzir, distribuir, financiar)?"]},
+   {tag:"conc",q:"Como um banco consegue lucrar com o dinheiro que as pessoas deixam guardado nele?",modelo:"Ele empresta parte desse dinheiro a pessoas, empresas e governos e cobra juros. Quanto mais depósitos, mais pode emprestar e mais juros recebe; uma parte desses juros volta aos clientes como rendimento.",chk:["Falei que o banco empresta o dinheiro guardado?","Falei dos juros como o 'preço' do empréstimo/lucro?"]},
+   {tag:"apl",q:"Uma vizinha comprou uma geladeira em 10 parcelas. Explique o que é crédito usando esse exemplo e diga quem ganha com os juros.",modelo:"Ela levou a geladeira para casa sem ter todo o dinheiro e vai pagar depois, em prazos: isso é crédito (um financiamento). Os juros embutidos nas parcelas são o ganho de quem financiou, como o banco.",chk:["Expliquei crédito como 'leva agora e paga depois, em prazo'?","Disse que quem financia (banco/financeira) ganha os juros?"]}
+  ]
+ },
+ {
+  porto:"Jogada 04 · Capítulo 16 · Tabuleiro do Dinheiro", emoji:"📈", u:"fin",
+  titulo:"Bolsa de valores e títulos da dívida pública",
+  texto:[
+   "A <span class='destaque'>Bolsa de Valores</span> surgiu no <b>século XVIII</b>, com a industrialização e o grande aumento do fluxo de dinheiro. Nela se negociam <span class='destaque'>ações</span> (documentos que mostram que você é dono de uma <b>fração de uma empresa</b>) e <span class='destaque'>títulos</span> (documentos de propriedade de um bem ou valor). Para entrar, o investidor procura uma <b>corretora</b>, que compra as ações por ele.",
+   "A empresa ganha dinheiro para investir — é como se ganhasse novos sócios. O investidor pode lucrar de duas formas: com o <span class='destaque'>dividendo</span> (a parte do lucro que a empresa distribui aos acionistas) e com a <b>valorização</b> (vender a ação mais caro do que comprou). Mas é sempre um <b>risco</b>: se a empresa perder valor, não há dividendos e a ação fica mais barata.",
+   "Existe ainda a <span class='destaque'>especulação financeira</span>: apostar que o preço de uma ação vai subir <b>sem que a empresa tenha crescido de verdade</b>. Os preços sobem descontrolados e se forma uma <span class='destaque'>bolha especulativa</span> (preços muito acima da realidade). Quando os investidores percebem que a empresa não vai corresponder, todos vendem: é o <b>estouro da bolha</b>, e quem demora perde muito dinheiro.",
+   "Os governos vendem <span class='destaque'>títulos da dívida pública</span> para pessoas, empresas e bancos. Quem compra um título está <b>emprestando dinheiro ao governo</b>, que passa a ter uma dívida com ele e paga rendimentos a longo prazo. Para ser atraente, o título oferece: (1) <b>juros altos</b>, definidos pelo <b>Banco Central</b> — mas, se forem altos demais, boa parte dos impostos vai para pagar juros; se forem baixos demais, ninguém compra; ou (2) <b>juros menores com muita segurança</b> — o governo controla as contas e guarda uma sobra para pagar a dívida, o que pode significar <b>cortes em saúde e educação</b>.",
+   "<div class='olhar'><b>Peça-chave — Banco Central:</b> instituição do governo que cuida da <b>estabilidade da moeda</b>, controla o crédito, fiscaliza os outros bancos, <b>define os juros</b>, guarda as reservas (ouro e outras moedas) e controla a emissão de dinheiro. No Brasil, fica em Brasília.</div>"
+  ],
+  perguntas:[
+   {tag:"conc",q:"Qual a diferença entre ganhar com dividendos e ganhar com a valorização de uma ação?",modelo:"Dividendo é a parte do lucro da empresa que é dividida entre os donos das ações. Valorização é quando a ação passa a valer mais e o investidor a vende por um preço maior do que pagou.",chk:["Disse que dividendo é parte do lucro distribuída aos acionistas?","Disse que valorização é vender a ação mais cara?"]},
+   {tag:"apl",q:"As ações de uma empresa inventada de jogos sobem 300% em um mês sem ela lançar nada novo. Explique o que pode estar acontecendo e o risco de quem comprar agora.",modelo:"Parece especulação: as pessoas apostam na alta sem a empresa crescer de verdade, formando uma bolha. Quando perceberem que ela não vale tanto, vão vender todas juntas, o preço despenca e quem comprou caro perde dinheiro.",chk:["Usei especulação ou bolha especulativa?","Expliquei o risco do estouro (queda e perda de dinheiro)?"]},
+   {tag:"apl",q:"Se você comprasse um título da dívida pública, para quem estaria emprestando dinheiro? Explique por que juros muito altos podem prejudicar escolas e hospitais.",modelo:"Estaria emprestando ao governo. Se os juros forem muito altos, uma grande parte dos impostos vai para pagar esses juros, e sobra menos dinheiro para serviços públicos como escolas e hospitais.",chk:["Disse que o empréstimo é para o governo/Estado?","Liguei juros altos a impostos indo para a dívida em vez de serviços?"]}
+  ]
+ },
+ {
+  porto:"Jogada 05 · Capítulo 16 · Tabuleiro do Dinheiro", emoji:"🏝️", u:"fin",
+  titulo:"Paraísos fiscais e o mercado que nunca dorme",
+  texto:[
+   "Os <span class='destaque'>paraísos fiscais</span> (ou <i>offshore</i>) são pequenos territórios — alguns são países independentes, outros são ilhas autônomas ligadas a grandes potências — onde os bancos dão muita <b>liberdade e segurança</b> aos investidores. Isso se mede pelo índice de <span class='destaque'>opacidade</span>: falta de transparência e sigilo sobre <b>quem é o dono</b> da conta, sem precisar provar de onde o dinheiro veio. Quanto maior a opacidade, maior o sigilo.",
+   "Isso alimenta três problemas sérios: a <b>corrupção</b> (dinheiro desviado é escondido lá, porque bancos comuns exigiriam comprovar a origem); o <b>crime organizado</b> (tráfico de drogas, armas, animais e pessoas, e até financiamento do terrorismo); e a <b>evasão fiscal</b> (donos de grandes fortunas mandam dinheiro para lá para fugir dos impostos do seu país).",
+   "Tudo se liga à <span class='destaque'>lavagem de dinheiro</span>: fazer parecer legal um dinheiro ganho de forma ilegal — por exemplo, abrindo empresas com pouca fiscalização e dizendo que o dinheiro veio delas. Resultado: <b>menos dinheiro público</b> para serviços sociais e mais violência e crime. Há pressão internacional para acabar com isso, mas os paraísos alegam <b>soberania</b> para fazer suas próprias leis. A <b>Suíça</b> tem um dos modelos de sigilo financeiro mais antigos e criticados.",
+   "O mercado financeiro funciona <b>24 horas por dia</b>: com a comunicação em tempo real, quando as bolsas dos EUA fecham, as da Ásia já estão abrindo. As bolsas de <b>Tóquio, Xangai e Hong Kong</b> são um <b>termômetro</b> para as demais; na Europa, destacam-se <b>Londres e Frankfurt</b>; na Oceania, <b>Sydney</b>. E o equilíbrio financeiro é um desafio dos blocos econômicos: a crise na <b>Grécia</b> mostrou isso na União Europeia.",
+   "<div class='olhar'><b>Golpe no tabuleiro — ataque especulativo:</b> investidores compram muita moeda estrangeira e vendem a moeda local, apostando contra ela, para forçar a <b>desvalorização</b>. É um \"tsunami financeiro\". Defesa: reservas de dólar robustas, políticas cambiais consistentes e credibilidade internacional.</div>"
+  ],
+  perguntas:[
+   {tag:"conc",q:"O que é opacidade e por que ela atrai dinheiro de corrupção?",modelo:"Opacidade é a falta de transparência: ninguém precisa dizer quem é o dono da conta nem provar de onde veio o dinheiro. Por isso o dinheiro desviado fica escondido e não é rastreado pelas investigações.",chk:["Defini opacidade como falta de transparência/sigilo?","Expliquei que não se comprova a origem, então o dinheiro sujo se esconde?"]},
+   {tag:"apl",q:"Um empresário inventado abre uma 'empresa de fachada' numa ilha com pouca fiscalização e diz que o dinheiro do tráfico veio dela. Que nome tem esse processo e por que ele prejudica a sociedade?",modelo:"É lavagem de dinheiro: dar aparência legal a um dinheiro ilegal. Prejudica porque dificulta combater o crime, tira dinheiro público que iria para serviços sociais e ajuda a aumentar a violência e o tráfico.",chk:["Chamei de lavagem de dinheiro?","Dei pelo menos um prejuízo (crime, violência, menos dinheiro público)?"]},
+   {tag:"apl",q:"À noite no Brasil sai uma notícia ruim sobre uma grande empresa. Explique por que o mercado pode reagir antes de amanhecer aqui, citando bolsas do livro.",modelo:"Porque o mercado financeiro funciona 24 horas, com comunicação em tempo real: quando as bolsas dos EUA fecham, as asiáticas (Tóquio, Xangai, Hong Kong) abrem e já negociam, servindo de termômetro para as outras.",chk:["Disse que o mercado funciona 24 horas/em tempo real?","Citei bolsas asiáticas (Tóquio, Xangai ou Hong Kong) abrindo quando as dos EUA fecham?"]}
+  ]
+ },
+ {
+  porto:"Jogada 06 · Capítulo 17 · Xeque no Leste", emoji:"🧭", u:"les", parte:"Tabuleiro 2 · Xeque no Leste e crise no Oeste (Cap. 17 — Crise e desafios atuais da Europa)",
+  titulo:"O exterior próximo da Rússia",
+  texto:[
+   "Os russos chamam de <span class='destaque'>\"exterior próximo\"</span> o território que foi dominado pelo <b>Império Russo</b>, depois pela <b>ex-URSS</b> e que hoje, em parte, é comandado pela Rússia. Essa influência nunca foi só militar: espalhar a <b>cultura e a língua russas</b> também era uma estratégia.",
+   "No regime de <b>Stálin (1922-1953)</b>, grandes grupos foram <b>expulsos de suas terras</b> e levados para áreas pobres da União Soviética, o que punia adversários e espalhava russos pelas outras repúblicas. Daí nasceram <span class='destaque'>minorias étnicas e linguísticas russas</span> em países como <b>Cazaquistão, Uzbequistão, Moldávia, Belarus e Ucrânia</b> — hoje usadas pelo governo de <b>Vladimir Putin</b> como trunfo para defender o exterior próximo.",
+   "Com o fim da URSS (<b>1991</b>) e do Pacto de Varsóvia, a Rússia perdeu influência. No Leste Europeu, países como <b>Letônia, Estônia, Lituânia, Polônia, Hungria e Bulgária</b> entraram na <b>União Europeia</b> e na <b>OTAN</b>. Moscou tenta manter seu poder em áreas estratégicas, como o entorno do <span class='destaque'>Mar Negro</span>: um mar semifechado ligado ao Mediterrâneo pelos estreitos de <b>Bósforo e Dardanelos</b>, com passagem para o Atlântico. É o único lugar onde a gigante Rússia pode ter <b>portos que nunca congelam</b>, navegáveis o ano todo.",
+   "Na Guerra Fria, a URSS era potência econômica, política e militar. Depois de 1991, a Rússia mergulhou numa crise, mas neste século voltou a crescer e entrou nos <span class='destaque'>BRICS</span> (Brasil, Rússia, Índia, China e África do Sul). Ela quer ser uma <b>potência autônoma</b> e reconquistar sua área de influência na Europa Oriental — e algumas dessas ações aconteceram na <b>Chechênia</b> e na <b>Ucrânia</b>.",
+   "<div class='olhar'><b>A Ucrânia dividida:</b> o leste ficou sob domínio russo muito antes do oeste; ali se fala mais russo e predomina a religião ortodoxa. O oeste passou séculos sob potências como a Polônia e o Império Austro-Húngaro; fala-se mais ucraniano e a população é mais católica.</div>"
+  ],
+  perguntas:[
+   {tag:"conc",q:"O que os russos chamam de 'exterior próximo'?",modelo:"É a área que já foi do Império Russo e da União Soviética e que a Rússia ainda considera sua zona de influência, em parte comandada por ela até hoje.",chk:["Liguei o termo ao território do antigo Império Russo/URSS?","Disse que é uma área de influência que a Rússia quer manter?"]},
+   {tag:"apl",q:"Explique a um colega por que um país gigante como a Rússia se preocupa tanto com um mar pequeno como o Mar Negro.",modelo:"Porque, mesmo enorme, a Rússia tem muitos portos que congelam no inverno. No Mar Negro os portos nunca congelam, e pelos estreitos de Bósforo e Dardanelos os navios chegam ao Mediterrâneo e ao Atlântico o ano todo.",chk:["Falei dos portos que não congelam (navegação o ano todo)?","Falei da saída para o Mediterrâneo/Atlântico pelos estreitos?"]},
+   {tag:"apl",q:"Como decisões tomadas por Stálin há décadas ajudam a explicar tensões de hoje em países vizinhos da Rússia? Dê um exemplo de país.",modelo:"Stálin deslocou populações e espalhou russos por outras repúblicas soviéticas. Ficaram minorias russas em países como a Ucrânia ou o Cazaquistão, e hoje a Rússia usa a 'proteção' dessas pessoas para justificar sua influência ali.",chk:["Falei dos deslocamentos de população no tempo de Stálin?","Dei um país com minoria russa e liguei ao uso político atual?"]}
+  ]
+ },
+ {
+  porto:"Jogada 07 · Capítulo 17 · Xeque no Leste", emoji:"⛰️", u:"les",
+  titulo:"Chechênia: xeque no Cáucaso",
+  texto:[
+   "A <span class='destaque'>Chechênia</span> é uma das repúblicas da <b>Federação Russa</b>, no <b>Cáucaso do Norte</b> (vizinha da Ossétia do Norte e da Inguchétia a oeste, da Geórgia ao sul, do Daguestão a leste e de Stavropol ao norte). Tem pouco mais de <b>17 mil km²</b>, dois idiomas oficiais (<b>russo e checheno</b>) e religião predominante <b>islâmica sunita</b>.",
+   "O conflito tem <b>mais de 200 anos</b>. No fim do século XVIII, o Império Russo tentou dominar os chechenos, que resistiram; o islamismo se espalhou na região, enquanto o império era cristão ortodoxo. Só na segunda metade do século XIX a Chechênia entrou de vez no território russo. Na Segunda Guerra, acusados de apoiar os nazistas, os chechenos foram combatidos: <b>Stálin deportou 400 mil</b> para áreas áridas da Ásia, com 100 a 200 mil mortos. O território tem <b>reservas de petróleo</b>, o que aumenta o interesse russo.",
+   "<span class='destaque'>Primeira Guerra da Chechênia:</span> em <b>novembro de 1991</b>, com a URSS se desfazendo, a Chechênia declarou independência. A Rússia não reconheceu e, em <b>1994</b>, no governo de <b>Boris Yeltsin</b>, enviou tropas. Motivos: manter a grandeza russa, criar um \"inimigo externo\" para a população esquecer a recessão, evitar que outras regiões também quisessem se separar e controlar <b>oleodutos, gasodutos</b> e fronteiras. Em <b>1996</b> os russos sofreram uma grande derrota, mas a independência não foi reconhecida.",
+   "<span class='destaque'>Segunda Guerra da Chechênia:</span> começou em <b>1999</b>, após atentados a bomba em prédios de Moscou atribuídos aos chechenos. <b>Vladimir Putin</b> mandou ataques aéreos que destruíram boa parte da capital chechena; houve violações de direitos humanos dos dois lados. Derrotados, os separatistas partiram para o <b>terrorismo</b>: em <b>2002</b>, ~750 reféns no teatro <b>Dubrovka</b> (Moscou) — o gás usado pela Rússia matou 116 reféns e 50 extremistas; em <b>2004</b>, mais de mil reféns numa escola em <b>Beslan</b>, com mais de 300 mortos, a maioria crianças.",
+   "<div class='olhar'><b>Hoje:</b> a Rússia não reconhece a soberania chechena e controla a região com um governo checheno aliado de Putin. A fase militar diminuiu e o tema perdeu visibilidade diante da Síria e da Ucrânia. Há suspeitas de ligação de grupos chechenos com a Al-Qaeda, nunca confirmadas.</div>"
+  ],
+  perguntas:[
+   {tag:"conc",q:"Que interesses econômicos e políticos fazem a Rússia não aceitar a independência da Chechênia?",modelo:"Economicamente, a Chechênia tem reservas de petróleo e por ali passam oleodutos e gasodutos. Politicamente, a Rússia teme que outras regiões também queiram se separar e quer manter o controle das fronteiras e a imagem de grandeza.",chk:["Citei petróleo e/ou oleodutos e gasodutos?","Citei um motivo político (efeito em outras regiões, fronteiras, grandeza)?"]},
+   {tag:"apl",q:"Compare a Primeira e a Segunda Guerra da Chechênia: quem governava a Rússia e como terminou cada uma.",modelo:"Na Primeira (1994-1996), com Yeltsin, os russos sofreram uma grande derrota, mas a independência não foi reconhecida. Na Segunda (a partir de 1999), com Putin, a Rússia esmagou os separatistas com muita violência, e eles passaram a usar o terrorismo.",chk:["Liguei a 1ª guerra a Yeltsin e a 2ª a Putin?","Disse o desfecho de cada uma (derrota russa em 1996 / vitória russa e terrorismo)?"]},
+   {tag:"apl",q:"Explique como um conflito por território pode acabar atingindo civis que não lutam, usando um exemplo do capítulo.",modelo:"Quando um lado perde a guerra, pode partir para atentados contra a população. Foi o que aconteceu com separatistas chechenos: em Beslan (2004) fizeram reféns numa escola, e mais de 300 pessoas morreram, a maioria crianças.",chk:["Expliquei a mudança para ataques contra civis (terrorismo)?","Usei um exemplo do livro (Beslan, Dubrovka ou os prédios de Moscou)?"]}
+  ]
+ },
+ {
+  porto:"Jogada 08 · Capítulo 17 · Xeque no Leste", emoji:"🛡️", u:"les",
+  titulo:"Crimeia: a península disputada",
+  texto:[
+   "A <span class='destaque'>Crimeia</span> é uma península no sul da Ucrânia que fazia parte do Império Russo. Em <b>1954</b>, o líder soviético <b>Nikita Kruschev</b> a transferiu para a Ucrânia. Enquanto tudo era União Soviética, isso não fez diferença; com a independência ucraniana, a mudança passou a desagradar a maior parte da população local, que era <b>russa</b>.",
+   "Para a <b>Ucrânia</b>, a Crimeia é a saída para o <b>Mar Negro</b> (e daí para o Mediterrâneo), com portos estratégicos para exportar seus produtos. Para a <b>Rússia</b>, a região tem <b>gasodutos</b> que levam o gás natural russo ao resto da Europa. Um acordo garantia que as fronteiras da Ucrânia seriam respeitadas.",
+   "Em <b>2013</b>, o presidente <b>Viktor Yanukovych</b> desistiu de assinar um acordo com a <b>União Europeia</b> (que derrubaria barreiras alfandegárias e afastaria a Ucrânia da CEI, ligada à Rússia), por pressão de Putin, que usava o <b>gás natural como moeda de troca</b>. Houve protestos pró-Europa, com prédios destruídos e mortes, e em <b>2014</b> Yanukovych foi derrubado e se exilou na Rússia.",
+   "A parcela pró-Rússia — grande parte dela na Crimeia — tomou o poder da península. Putin enviou tropas, dizendo defender os direitos da população; na prática, houve <b>militarização</b>, com bases e aeroportos ocupados. Num <span class='destaque'>referendo em março de 2014</span>, mais de <b>96%</b> votaram pela separação da Ucrânia e <b>anexação à Rússia</b>.",
+   "<div class='olhar'><b>Impasse:</b> o referendo <b>não foi reconhecido</b> pelos EUA e pela União Europeia. Para a Rússia, a Crimeia é sua; para grande parte do mundo, continua ucraniana. Vieram <b>sanções</b>: a Rússia saiu do <b>G8</b> e ficou mais difícil para russos obterem vistos na UE e nos EUA. Putin mandou mais tropas e passou a dizer que a entrada da Ucrânia na <b>OTAN</b> ameaçaria a segurança russa.</div>"
+  ],
+  perguntas:[
+   {tag:"conc",q:"Por que a Crimeia é importante para a Ucrânia e para a Rússia?",modelo:"Para a Ucrânia, é a saída para o Mar Negro, com portos usados para exportar. Para a Rússia, tem gasodutos que levam seu gás natural à Europa, além de população majoritariamente russa.",chk:["Disse o interesse ucraniano (saída para o mar/portos)?","Disse o interesse russo (gasodutos/gás natural)?"]},
+   {tag:"apl",q:"Imagine que você é repórter em 2014. Conte, em ordem, três acontecimentos que levaram a Crimeia a ser anexada pela Rússia.",modelo:"1) Yanukovych desiste do acordo com a UE por pressão russa e há protestos; 2) ele é derrubado em 2014 e o grupo pró-Rússia toma o poder na Crimeia, com tropas russas ocupando bases; 3) em março de 2014 um referendo aprova a anexação com mais de 96% dos votos.",chk:["Coloquei 3 acontecimentos do livro?","A ordem está certa (acordo/protestos → derrubada/tropas → referendo)?"]},
+   {tag:"apl",q:"Um colega diz: 'O povo votou, então a anexação é legítima e ponto final'. Use o capítulo para mostrar por que muitos países discordam.",modelo:"O voto aconteceu com a região militarizada por tropas russas, que ocupavam bases e aeroportos, e havia um acordo para respeitar as fronteiras da Ucrânia. Por isso EUA e UE não reconheceram o referendo e puniram a Rússia com sanções, como a saída do G8.",chk:["Citei a presença/ocupação militar russa ou o acordo das fronteiras?","Citei o não reconhecimento e uma sanção (G8, vistos)?"]}
+  ]
+ },
+ {
+  porto:"Jogada 09 · Capítulo 17 · Xeque no Leste", emoji:"⚔️", u:"les",
+  titulo:"Donetsk e a guerra de 2022",
+  texto:[
+   "Em <b>2014</b>, a população do <b>leste ucraniano</b>, sobretudo de <span class='destaque'>Donetsk e Lugansk</span>, protestou por mais autonomia e contra a queda de Yanukovych, ocupando prédios públicos. Em <b>maio de 2014</b>, líderes separatistas proclamaram a independência de Donetsk, e começou uma <b>guerra civil no leste da Ucrânia</b>.",
+   "Os objetivos eram opostos: a Ucrânia queria recuperar as áreas e desarmar os rebeldes, dando em troca alguma autonomia; os rebeldes queriam <b>separar Donetsk</b> e ter a independência reconhecida. A Rússia acompanhava de longe, querendo a autonomia da área como na Crimeia, com o pretexto de <b>proteger o povo russo</b>. UE e EUA queriam enfraquecer a influência russa. Em <b>2015</b>, um cessar-fogo foi assinado e logo desrespeitado.",
+   "<span class='destaque'>Aspectos em comum entre Crimeia e Donetsk:</span> (1) o disparador foi a possível <b>aproximação da Ucrânia com a União Europeia</b>, que descontentou a parcela russa; (2) as duas regiões têm <b>gás natural e gasodutos</b> importantes para a Rússia — que diz proteger os russos, mas esconde interesses econômicos.",
+   "Em <b>24 de fevereiro de 2022</b>, Putin declarou guerra e <b>invadiu a Ucrânia</b> — um dos maiores conflitos militares na Europa desde a Segunda Guerra. Dias antes, ele havia reconhecido a independência de Donetsk e Lugansk e disse que a invasão protegia os russos do leste. Até agosto de 2023, cerca de <b>200 mil mortos</b>, mais de 300 mil feridos e <b>6,1 milhões de refugiados</b> ucranianos.",
+   "<div class='olhar'><b>Mesa de negociação:</b> a Rússia exige a <b>neutralidade militar e a desmilitarização</b> da Ucrânia; o presidente ucraniano, <b>Volodymyr Zelensky</b>, quer garantia de que o país não será atacado de novo. A Ucrânia recebe apoio militar e humanitário, e vários países aplicam <b>sanções</b> à Rússia, como a retirada de empresas e o congelamento de bens russos.</div>"
+  ],
+  perguntas:[
+   {tag:"conc",q:"Quais são os dois aspectos em comum entre os conflitos da Crimeia e de Donetsk?",modelo:"Os dois começaram com a possível aproximação da Ucrânia com a União Europeia, que desagradou a população russa dessas regiões, e as duas áreas têm gás natural e gasodutos importantes para a Rússia.",chk:["Citei a aproximação Ucrânia–União Europeia?","Citei o gás natural/gasodutos?"]},
+   {tag:"apl",q:"Explique a frase: 'A Rússia diz proteger os russos do leste da Ucrânia, mas também tem interesse econômico ali'.",modelo:"O discurso oficial é defender a população que fala russo no leste. Mas Donetsk e a Crimeia têm gás e gasodutos que levam o gás russo à Europa; controlar essas áreas vale muito dinheiro e poder para a Rússia.",chk:["Expliquei o discurso de 'proteger os russos'?","Mostrei o interesse econômico escondido (gás/gasodutos)?"]},
+   {tag:"apl",q:"Numa negociação de paz, cada lado quer uma coisa. Explique o que a Rússia exige e o que a Ucrânia quer, e por que é difícil chegar a um acordo.",modelo:"A Rússia quer que a Ucrânia fique neutra (fora de alianças militares como a OTAN) e desarmada. A Ucrânia quer segurança de que não será invadida de novo. Ficar desarmada é justamente o que a deixaria menos segura, por isso os pedidos se chocam.",chk:["Disse o que a Rússia exige (neutralidade/desmilitarização)?","Disse o que a Ucrânia quer (segurança) e por que os pedidos se chocam?"]}
+  ]
+ },
+ {
+  porto:"Jogada 10 · Capítulo 17 · Crise no Oeste", emoji:"💶", u:"les",
+  titulo:"Zona do Euro, Grécia e Brexit",
+  texto:[
+   "O <span class='destaque'>Tratado de Maastricht</span> (<b>1992</b>) criou condições para um país adotar o <b>euro</b>: <b>déficit orçamentário abaixo de 3% do PIB</b> e <b>dívida pública de no máximo 60% do PIB</b>. Nem todos conseguiam; alguns decidiram não aderir. Houve um prazo de <b>dez anos</b> para ajustar as contas. Assim, uma parte do bloco usou a nova moeda, outra optou por não usar e um terceiro grupo só entraria quando cumprisse as regras: nasceu a <span class='destaque'>Zona do Euro</span>.",
+   "O problema eram as diferenças. Havia economias fortes, com tecnologia e indústria de ponta (como a <b>Alemanha</b>), e países com desindustrialização, recessão e dívida crescente (como <b>Portugal</b>). França e Finlândia mantinham os gastos sob controle com os impostos; <b>Irlanda e Grécia</b> arrecadavam muito menos do que gastavam. Em <b>2008</b>, uma grande crise econômica nos <b>Estados Unidos</b> deixou os investidores inseguros e os empréstimos diminuíram. Os mais afetados foram <b>Portugal, Itália, Irlanda, Grécia e Espanha</b>.",
+   "A <b>Grécia</b> virou o maior símbolo da crise: o governo <b>escondia o tamanho do déficit</b>, os investidores perderam a confiança e o PIB caiu cerca de <b>25%</b>. O país pediu ajuda ao <b>FMI</b>, ao <b>Banco Central Europeu (BCE)</b> e à <b>Comissão Europeia (CE)</b>, que exigiram <span class='destaque'>austeridade</span>: <b>corte de gastos públicos</b> — redução de salários, aposentadorias e pensões, privatizações e demissões. Houve protestos e pedidos de saída da Zona do Euro; o BCE fez novos empréstimos para manter o bloco estável. A dívida grega chegou a <b>207% do PIB em 2020</b>.",
+   "<span class='destaque'>Brexit</span> = <i>Britain</i> + <i>exit</i>, a \"saída britânica\". Num <b>referendo em 2016</b>, <b>51,9%</b> votaram pela saída do Reino Unido da UE. Os defensores diziam que a desvalorização do euro e as migrações prejudicavam o país — argumentos frágeis, porque o Reino Unido <b>não usa o euro e não faz parte do Acordo de Schengen</b>; a campanha usou discursos nacionalistas e xenófobos. O primeiro-ministro <b>David Cameron</b>, contra a saída, renunciou; <b>Theresa May</b> começou o \"divórcio\" e a saída oficial veio em <b>1º de janeiro de 2021</b>, após negociações de <b>Boris Johnson</b>.",
+   "<div class='olhar'><b>Mapa do voto:</b> a saída só venceu no <b>interior da Inglaterra e no País de Gales</b>. <b>Londres, Escócia e Irlanda do Norte</b> votaram por ficar. Pesquisas posteriores mostram arrependimento: em uma delas, 58% votariam hoje pela permanência.</div>"
+  ],
+  perguntas:[
+   {tag:"conc",q:"O que é austeridade e por que ela foi exigida da Grécia?",modelo:"Austeridade é cortar fortemente os gastos públicos (salários, aposentadorias, pensões, demissões e privatizações). Foi exigida pelo FMI, BCE e Comissão Europeia como condição para emprestar dinheiro à Grécia, que estava com déficit e dívida enormes.",chk:["Defini austeridade como corte de gastos públicos?","Liguei a exigência à ajuda/empréstimo de FMI, BCE e CE?"]},
+   {tag:"apl",q:"Um país inventado tem déficit de 5% do PIB e dívida pública de 80% do PIB. Pelas regras de Maastricht, ele poderia adotar o euro? Explique.",modelo:"Não. Maastricht exige déficit abaixo de 3% do PIB e dívida de no máximo 60% do PIB. Esse país passa dos dois limites e teria de arrumar as contas antes.",chk:["Respondi que não poderia?","Comparei com os limites certos (3% de déficit e 60% de dívida)?"]},
+   {tag:"apl",q:"Um defensor do Brexit diz: 'Precisamos sair da UE porque o euro está se desvalorizando'. Use o livro para mostrar a falha desse argumento.",modelo:"O argumento não se sustenta porque o Reino Unido nem usa o euro: sua moeda é outra. Ele também não fazia parte do Acordo de Schengen. A campanha usou mais discurso nacionalista e xenófobo do que fatos.",chk:["Disse que o Reino Unido não usa o euro?","Citei Schengen ou o discurso nacionalista/xenófobo?"]}
+  ]
+ },
+ {
+  porto:"Jogada 11 · Capítulo 18 · Peças que querem sair", emoji:"🗺️", u:"sep", parte:"Tabuleiro 3 · Peças que querem sair (Cap. 18 — Tensões sociais na Europa)",
+  titulo:"Nações, fronteiras e um continente recortado",
+  texto:[
+   "A Europa tem cerca de <b>10 milhões de km²</b>, <b>740 milhões de habitantes</b> e é dividida em <b>50 países</b> — um dos continentes mais <b>recortados</b> do mundo. Para comparar: a América do Norte, com uns 24 milhões de km², tem só 3 países. E o número de países europeus ainda pode crescer, porque há <b>movimentos separatistas</b> lutando por novos Estados.",
+   "A organização em países como conhecemos hoje <b>não é antiga</b>: começou e se espalhou nos <b>séculos XIX e XX</b>. Antes, predominavam os <span class='destaque'>governos absolutistas</span> (ou imperiais), formados por reinos e impérios. Com a <b>Revolução Francesa (1789)</b>, ganhou força a ideia de que o governo deve seguir a vontade da <span class='destaque'>nação</span>, e não só a do rei.",
+   "<b>Nação</b> são as pessoas que se identificam com o lugar onde vivem e se reconhecem como parte de um mesmo grupo. Não existe regra fixa, mas alguns elementos ajudam a formar a identidade nacional: o <b>idioma</b>, a <b>cultura</b> e, principalmente, as <b>tradições e a história em comum</b> (a síntese do livro inclui também a <b>religião</b>).",
+   "Os países europeus surgiram da <span class='destaque'>fragmentação dos antigos impérios</span>: até o início do século XX, as fronteiras dependiam da força de cada império para manter seus domínios. São o resultado de uma longa história de disputas entre <b>feudos, reinos e impérios</b>. Às vezes os feudos se uniram e formaram países maiores (Alemanha, França, Espanha, Itália); outras vezes, pequenas unidades se mantiveram — os <span class='destaque'>microestados</span> (como Andorra, Mônaco, Liechtenstein, San Marino, Vaticano e Malta).",
+   "<div class='olhar'><b>Regra do jogo:</b> quando um grupo não se reconhece como parte do Estado onde vive e quer separar seu território para formar um novo país, temos um <b>movimento separatista</b>. Alguns são pacíficos; outros envolvem conflitos armados ou terrorismo.</div>"
+  ],
+  perguntas:[
+   {tag:"conc",q:"O que é uma nação, segundo o capítulo?",modelo:"Nação é um grupo de pessoas que se identificam com o lugar onde vivem e se reconhecem como parte do mesmo grupo, ligadas por coisas como língua, cultura, tradições e história em comum.",chk:["Falei de identidade/sentimento de pertencer a um grupo?","Citei pelo menos dois elementos (língua, cultura, tradições, história, religião)?"]},
+   {tag:"apl",q:"Um grupo fala a mesma língua, tem as mesmas festas e conta a mesma história, mas vive num país que não reconhece sua identidade. O que pode surgir daí? Use o termo do capítulo.",modelo:"Pode surgir um movimento separatista: o grupo se vê como uma nação própria e passa a querer separar seu território para criar um novo país, de forma pacífica ou até violenta.",chk:["Usei o termo 'movimento separatista'?","Expliquei que o grupo quer um novo país por ter identidade própria?"]},
+   {tag:"apl",q:"Explique por que a Europa tem tantos países sendo um continente pequeno, citando o que aconteceu com os antigos impérios e feudos.",modelo:"Porque seus países nasceram da quebra dos grandes impérios e de séculos de disputas entre feudos, reinos e impérios. Alguns feudos se juntaram em países maiores, mas muitas unidades pequenas sobreviveram, inclusive microestados, e ainda há grupos querendo se separar.",chk:["Citei a fragmentação dos impérios/disputas entre feudos e reinos?","Citei microestados ou novos separatismos?"]}
+  ]
+ },
+ {
+  porto:"Jogada 12 · Capítulo 18 · Peças que querem sair", emoji:"🧩", u:"sep",
+  titulo:"Iugoslávia: o tabuleiro que se partiu",
+  texto:[
+   "A <span class='destaque'>Iugoslávia</span> existiu no sudeste da Europa durante o século XX. O nome — \"terra dos <b>eslavos do sul</b>\" — foi dado em <b>1929</b> pelo rei <b>Alexander</b>, para inventar uma identidade nacional e tirar a atenção das identidades regionais (croata, sérvia, bósnia...): todos ali eram descendentes de <b>eslavos</b>, povo que chegou à Europa por volta do <b>século VI</b>.",
+   "Mas os povos eslavos não são iguais. <b>Eslovênia e Croácia</b> são majoritariamente <b>católicas</b> (perto da Europa Ocidental); <b>Sérvia e Montenegro</b> são de maioria <b>cristã ortodoxa</b>, como a Rússia, e usam o <b>alfabeto cirílico</b>; no <b>Kosovo</b>, a maioria é <b>muçulmana</b>, próxima da Albânia; a <b>Bósnia e Herzegovina</b> mistura bósnio-muçulmanos, bósnio-sérvios (ortodoxos) e bósnio-croatas (católicos). Essa diversidade vem de a região ter feito parte de dois impérios: o <b>Austro-Húngaro</b> (católico) e o <b>Turco-Otomano</b> (muçulmano).",
+   "Depois da <b>Primeira Guerra</b>, esses impérios caíram e surgiu o <b>reino dos sérvios, croatas e eslovenos</b>, rebatizado de Iugoslávia em 1929. Invadida pela <b>Alemanha</b> na Segunda Guerra, foi libertada por uma resistência liderada por <span class='destaque'>Josip Broz Tito</span>, que governou até morrer, em <b>1980</b>. Tito manteve a união com três estratégias: <b>autonomia para cada região</b> (educação e religião), <b>união em torno do socialismo</b> e <b>ditadura</b>, que perseguia quem discordava.",
+   "Após 1980, as disputas voltaram e pioraram com a <b>crise que, a partir de 1991, atingiu os países socialistas</b>. O conflito mais violento foi a <span class='destaque'>Guerra da Bósnia (1992-1995)</span>: a população multicultural da Bósnia lutou por autonomia contra tropas da <b>Sérvia</b> e, depois, da <b>Croácia</b>. Foram cerca de <b>200 mil mortos</b> e quase <b>2 milhões de refugiados</b>. <b>Slobodan Milosevic</b>, que governou de 1989 a 2000, foi o principal responsável pelas tropas sérvias e pelo conflito no <b>Kosovo (1998-1999)</b>, que se declarou independente após intervenção da OTAN.",
+   "<div class='olhar'><b>Placar final:</b> o nome Iugoslávia deixou de existir em <b>2003</b> (virou Sérvia e Montenegro, que se separaram em <b>2006</b>). Hoje a região é dividida em <b>seis países</b>: Eslovênia, Croácia, Bósnia e Herzegovina, Montenegro, Sérvia e Macedônia. E ainda há quem queira se separar: a <b>Voivodina</b> (norte da Sérvia) e o <b>Kosovo</b>, que busca reconhecimento.</div>"
+  ],
+  perguntas:[
+   {tag:"conc",q:"Por que o rei Alexander escolheu o nome 'Iugoslávia' em 1929?",modelo:"Para criar uma identidade nacional única: o nome destaca o que todos tinham em comum (serem eslavos do sul) e tenta apagar as identidades regionais de croatas, sérvios, bósnios e outros.",chk:["Disse que o nome significa terra dos eslavos do sul?","Expliquei que o objetivo era unir e enfraquecer as identidades regionais?"]},
+   {tag:"apl",q:"Explique a um colega por que croatas, sérvios e kosovares, todos da antiga Iugoslávia, têm religiões diferentes.",modelo:"Porque a região foi dividida entre impérios diferentes: o Austro-Húngaro, católico, influenciou croatas (e eslovenos); o Turco-Otomano, muçulmano, influenciou o Kosovo; e os sérvios seguiram o cristianismo ortodoxo, como a Rússia.",chk:["Associei cada povo à sua religião (croata católico, sérvio ortodoxo, kosovar muçulmano)?","Liguei a diferença aos impérios Austro-Húngaro e Turco-Otomano?"]},
+   {tag:"apl",q:"Usando as três estratégias de Tito, explique por que o país se despedaçou depois de 1980.",modelo:"Tito segurava o país com autonomia regional, com o socialismo como ideia comum e com a força da ditadura. Quando ele morreu e a crise atingiu os países socialistas, faltaram o líder, a força e a ideia que uniam; as rivalidades voltaram e vieram guerras como a da Bósnia.",chk:["Citei as estratégias de Tito (autonomia, socialismo, ditadura)?","Liguei a fragmentação à morte de Tito e à crise do socialismo?"]}
+  ]
+ },
+ {
+  porto:"Jogada 13 · Capítulo 18 · Peças que querem sair", emoji:"🏰", u:"sep",
+  titulo:"Espanha: Catalunha e País Basco",
+  texto:[
+   "No fim do <b>século XVI</b>, o reino de <b>Leão e Castela</b> unificou a Espanha (capital: Madri), mas isso não fez todos os reinos adotarem a identidade espanhola — caso da <b>Catalunha</b> e do <b>País Basco</b>. A <span class='destaque'>Catalunha</span>, no <b>leste</b> do país, negocia sua autonomia desde então. Depois da ditadura de <b>Francisco Franco</b> (regime autoritário de extrema direita, <b>1939-1975</b>), a Espanha voltou a ser monarquia e criou <b>16 comunidades autônomas</b>, com regras próprias de economia, cultura e política. O <b>catalão</b> foi reconhecido como idioma oficial.",
+   "Achando pouco, os catalães aprovaram por plebiscito o <span class='destaque'>Estatuto da Catalunha</span> (parecido com as leis estaduais do Brasil), que criou um parlamento e o cargo de presidente da Catalunha; foi aprovado em <b>2006</b>, sem o aval de Madri. Com a crise de <b>2008</b>, a questão ficou também <b>econômica</b>: a Catalunha é a <b>região que mais produz riqueza</b> e tem o menor desemprego — os catalães querem manter essa riqueza; Madri não quer perdê-la.",
+   "Em <b>2010</b>, a Suprema Corte vetou partes do Estatuto (impostos e o reconhecimento de uma <b>nação catalã</b>), e o movimento virou separatista. Em <b>2017</b>, houve um <span class='destaque'>referendo</span>: Madri proibiu, mandou tropas recolher urnas e prender quem votasse, e ficou com imagem de autoritária. Cerca de <b>90%</b> dos votantes apoiaram a independência; o presidente catalão a declarou, Madri não reconheceu e mandou prendê-lo (ele já estava na <b>Bélgica</b>). Símbolo da luta: a bandeira <b>estelada</b> (triângulo azul e estrela), diferente da oficial, a <b>senyera</b>.",
+   "O <span class='destaque'>País Basco</span> fica no norte da Espanha e no sudoeste da França. Os bascos são considerados descendentes dos <b>primeiros habitantes da Europa Ocidental</b> e falam o <b>basco</b> (<i>euskara</i>), uma língua <b>sem parentesco com nenhuma outra</b> da Europa Ocidental — já o catalão é latino, parecido com o castelhano. O grupo <span class='destaque'>ETA (Pátria Basca e Liberdade)</span> surgiu nos <b>anos 1950</b> para lutar pela identidade e autonomia basca contra Franco, usando sequestros e carros-bomba.",
+   "<div class='olhar'><b>Fim de partida para o ETA:</b> com a volta da democracia (fim dos anos 1970), o grupo perdeu apoio; em <b>2010-2011</b> negociou a paz e prometeu abandonar a violência; em <b>2018</b>, anunciou o fim do grupo.</div>"
+  ],
+  perguntas:[
+   {tag:"conc",q:"O que foi o ETA, qual era seu objetivo e que métodos usava?",modelo:"O ETA (Pátria Basca e Liberdade) foi um grupo separatista basco criado nos anos 1950 para defender a identidade e a autonomia do povo basco frente à Espanha. Usava ações violentas, como sequestros, carros-bomba e atentados, e anunciou seu fim em 2018.",chk:["Disse que era um grupo separatista basco (identidade/autonomia)?","Citei os métodos violentos (sequestros, bombas, atentados)?"]},
+   {tag:"apl",q:"Dê uma razão histórico-cultural e uma razão econômica para muitos catalães quererem a independência.",modelo:"Histórico-cultural: a Catalunha tem identidade, língua (o catalão) e história próprias e nunca aderiu de vez à identidade espanhola desde a unificação. Econômica: é a região mais rica e com menos desemprego, e os catalães querem que essa riqueza fique na região.",chk:["Dei uma razão histórico-cultural (identidade, língua, história)?","Dei uma razão econômica (região mais rica / manter a riqueza)?"]},
+   {tag:"apl",q:"Compare catalães e bascos quanto à língua e quanto à forma de luta.",modelo:"O catalão é uma língua latina, parecida com o castelhano; o basco não tem relação com nenhuma outra língua da Europa Ocidental. Na luta, o movimento catalão recente usou estatuto, referendo e protestos; no País Basco, o ETA usou violência armada até 2018.",chk:["Comparei as línguas (catalão latino × basco sem parentesco)?","Comparei as formas de luta (política/referendo × violência do ETA)?"]}
+  ]
+ },
+ {
+  porto:"Jogada 14 · Capítulo 18 · Peças que querem sair", emoji:"🎯", u:"sep",
+  titulo:"Reino Unido dividido e o terrorismo na Europa",
+  texto:[
+   "A <b>República da Irlanda</b> nasceu de um movimento separatista que lutou por séculos e conquistou autonomia em <b>1922</b>. O <b>Reino Unido</b> tem <b>quatro unidades</b>: Inglaterra, Escócia, País de Gales e Irlanda do Norte. O <b>Brexit</b> reacendeu discussões separatistas na <b>Escócia</b> e na <b>Irlanda do Norte</b>, que votaram para ficar na UE e foram tiradas dela só por fazerem parte do Reino Unido. Na Escócia, em <b>2014</b>, a permanência no Reino Unido tinha vencido por pequena margem; agora se fala em novo referendo.",
+   "Na Irlanda do Norte, houve décadas de conflito com o <span class='destaque'>IRA (Exército Republicano Irlandês)</span>, grupo <b>católico</b> contra a permanência no Reino Unido, oficialmente <b>protestante (anglicano)</b>. Entre <b>1960 e 1980</b>, os confrontos com as Forças Armadas britânicas fizeram inúmeras vítimas. As negociações só avançaram a partir de <b>1990</b>; em <b>2005</b>, o IRA deixou oficialmente de existir, e o partido <b>Sinn Féin</b> continuou defendendo a saída de forma pacífica.",
+   "O <span class='destaque'>terrorismo</span> não é novidade na Europa: no século passado, o <b>ETA</b> (País Basco) e o <b>IRA</b> (Irlanda do Norte) usaram bombas e táticas de <b>guerrilha</b>. No século XXI, ganharam força grupos de visão religiosa ou ideológica <b>fundamentalista</b>. Depois dos ataques de <b>11 de setembro de 2001</b>, os EUA lançaram a <b>Guerra ao Terror</b>; países europeus que a apoiaram sofreram retaliações da <b>Al Qaeda</b> e do <b>Estado Islâmico</b>.",
+   "Alguns ataques: <b>Madri 2004</b> (trens, 191 mortos), <b>Londres 2005</b> (metrô e ônibus, 52), <b>Paris 2015</b> (jornal <i>Charlie Hebdo</i>, em janeiro, e ataques simultâneos com 130 mortos, em novembro), <b>Bruxelas 2016</b> (aeroporto e metrô), <b>Nice 2016</b> (caminhão, 84 mortos), Berlim 2016, Barcelona 2017, Viena 2020. Como alguns foram cometidos por imigrantes ou descendentes, aumentou a <span class='destaque'>xenofobia</span> — embora outros autores fossem cidadãos europeus comuns.",
+   "<div class='olhar'><b>Nem todo terror é religioso:</b> em <b>22 de julho de 2011</b>, na <b>Noruega</b>, um homem ligado a grupos ultraconservadores explodiu bombas em Oslo e atirou em jovens num acampamento de um partido: 77 mortos ao todo. O caso reacendeu o debate sobre os partidos de <b>extrema direita</b> que pregam <b>xenofobia e islamofobia</b>.</div>"
+  ],
+  perguntas:[
+   {tag:"conc",q:"Por que a aprovação do Brexit pode reacender separatismos dentro do Reino Unido?",modelo:"Porque Escócia e Irlanda do Norte votaram para continuar na União Europeia, mas foram obrigadas a sair só por fazerem parte do Reino Unido. Isso fortalece quem quer se separar, como a Escócia, que já fala em novo referendo.",chk:["Disse que Escócia/Irlanda do Norte votaram para ficar na UE?","Liguei a 'saída forçada' ao fortalecimento do separatismo (novo referendo)?"]},
+   {tag:"apl",q:"Compare o IRA e o ETA: em que eles se parecem e em que se diferenciam?",modelo:"Parecem-se porque eram grupos separatistas que usaram violência, com bombas e atentados, e acabaram encerrando a luta armada. Diferem no lugar e no motivo: o IRA, católico, queria tirar a Irlanda do Norte do Reino Unido (fim em 2005); o ETA lutava pela independência do País Basco frente à Espanha (fim em 2018).",chk:["Disse uma semelhança (separatistas violentos)?","Disse uma diferença (lugar/país, religião ou data de fim)?"]},
+   {tag:"apl",q:"Por que alguns atentados aumentaram a xenofobia na Europa? E por que o caso da Noruega mostra que o terrorismo não tem uma única origem?",modelo:"Como alguns autores eram imigrantes ou filhos de imigrantes, parte da população passou a desconfiar e a hostilizar estrangeiros em geral (xenofobia). Mas na Noruega, em 2011, o autor era um norueguês ligado a grupos ultraconservadores, sem motivo religioso: terrorismo pode vir de vários extremismos, inclusive da extrema direita.",chk:["Expliquei a ligação entre ataques de imigrantes e xenofobia?","Usei a Noruega para mostrar extremismo não religioso/de extrema direita?"]}
+  ]
+ }
+];
+
+
+/* ====== ESTADO E PERSISTÊNCIA ====== */
+var CHAVE=KIT+'_leitura_v1';
+var mem={};
+var estado=carregar();
+
+function carregar(){
+  try{ var s=localStorage.getItem(CHAVE); if(s) return JSON.parse(s); }catch(e){ if(mem[CHAVE]) return JSON.parse(mem[CHAVE]); }
+  return {blocos:{}};
+}
+function calcProgresso(){
+  var conf=0, chkPend=0;
+  BLOCOS.forEach(function(bloco,i){
+    var b=estado.blocos[i]; if(!b||!b.conferido) return; conf++;
+    bloco.perguntas.forEach(function(p,j){ var ep=(b.perguntas&&b.perguntas[j])||{chk:{}}; p.chk.forEach(function(pt,k){ if(!ep.chk||!ep.chk[k]) chkPend++; }); });
+  });
+  estado.progresso={conferidos:conf,total:BLOCOS.length,chkPendentes:chkPend};
+  if(conf===BLOCOS.length && chkPend===0){ if(!estado.concluido){ estado.concluido=true; estado.concluidoEm=new Date().toISOString(); } }
+  return estado.progresso;
+}
+function salvar(){
+  calcProgresso();
+  var s=JSON.stringify(estado);
+  try{ localStorage.setItem(CHAVE,s); }catch(e){ mem[CHAVE]=s; }
+  var d=new Date();
+  document.getElementById('salvo').textContent='💾 Salvo às '+d.toLocaleTimeString('pt-BR')+' de '+d.toLocaleDateString('pt-BR');
+  atualizarTrilhaFim();
+}
+function atualizarTrilhaFim(){
+  var p=estado.progresso||calcProgresso();
+  var box=document.getElementById('trilha-fim'), txt=document.getElementById('trilha-fim-txt'), btn=document.getElementById('btn-prox');
+  var h3=box.querySelector('h3');
+  if(estado.concluido||trilhaLiberada()){
+    h3.textContent='✅ Leitura concluída — Quiz destravado!';
+    txt.textContent=estado.concluido?'Você conferiu as '+BLOCOS.length+' jogadas e respondeu a autoavaliação. Agora teste o que aprendeu.':'Trilha liberada pelos pais.';
+    btn.classList.remove('off');
+  } else {
+    h3.textContent='🔒 Próxima etapa: Quiz';
+    var faltam=p.total-p.conferidos;
+    txt.textContent=faltam>0 ? 'Destrava quando você conferir as '+p.total+' jogadas (faltam '+faltam+').' : 'Falta responder a autoavaliação Sim/Não de '+p.chkPendentes+' ponto(s) para destravar.';
+    btn.classList.add('off');
+  }
+  marcarNav();
+}
+function estBloco(i){ if(!estado.blocos[i]) estado.blocos[i]={aberto:i===0,conferido:false,perguntas:{}}; return estado.blocos[i]; }
+function estPerg(i,j){ var b=estBloco(i); if(!b.perguntas[j]) b.perguntas[j]={resp:'',warned:false,red:false,tentou:'',chk:{}}; return b.perguntas[j]; }
+
+/* ====== ANTICÓPIA (motor validado — Português 7º, 08/10/2026) ====== */
+function normPal(s){
+  return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/<[^>]*>/g,' ').replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean);
+}
+function maiorRun(aw,bw){
+  var bStr=' '+bw.join(' ')+' ', best=0;
+  for(var i=0;i<aw.length;i++){
+    for(var len=aw.length-i; len>0; len--){
+      var sub=aw.slice(i,i+len).join(' ');
+      if(bStr.indexOf(' '+sub+' ')>=0){ if(len>best)best=len; break; }
+    }
+  }
+  return best;
+}
+function cobertoPorRuns(aw,bw,minRun){
+  var bStr=' '+bw.join(' ')+' ', cov=new Array(aw.length).fill(false);
+  for(var i=0;i<aw.length;i++){
+    for(var len=aw.length-i; len>=minRun; len--){
+      var sub=aw.slice(i,i+len).join(' ');
+      if(bStr.indexOf(' '+sub+' ')>=0){ for(var k=i;k<i+len;k++)cov[k]=true; break; }
+    }
+  }
+  return cov.filter(Boolean).length;
+}
+function ehCopia(resp, textoBloco, pergunta){
+  var a=normPal(resp), src=normPal(textoBloco), q=normPal(pergunta);
+  if(a.length<5) return false;
+  var qStr=' '+q.join(' ')+' ', keep=new Array(a.length).fill(true);
+  for(var i=0;i<a.length;i++){
+    for(var len=a.length-i; len>=4; len--){
+      var sub=a.slice(i,i+len).join(' ');
+      if(qStr.indexOf(' '+sub+' ')>=0){ for(var k=i;k<i+len;k++)keep[k]=false; break; }
+    }
+  }
+  var af=a.filter(function(w,idx){return keep[idx];});
+  if(af.length<5) return false;
+  var run=maiorRun(af,src);
+  var cov=cobertoPorRuns(af,src,5);
+  var ratio=cov/af.length;
+  return run>=8 || ratio>0.6;
+}
+
+/* ====== RENDER ====== */
+function textoPlano(bloco){ return bloco.texto.join(' '); }
+function irBloco(i){ var el=document.getElementById('bloco'+i); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }
+
+function render(){
+  var cont=document.getElementById('blocos'); cont.innerHTML='';
+  BLOCOS.forEach(function(bloco,i){
+    var b=estBloco(i);
+    if(bloco.parte){ var pt=document.createElement('div'); pt.className='parte '+bloco.u; pt.textContent='♟️ '+bloco.parte; cont.appendChild(pt); }
+    var div=document.createElement('div'); div.className='bloco '+bloco.u+(b.aberto?'':' travado'); div.id='bloco'+i;
+    var html='<div class="bloco-cab"><div class="num">'+(i+1)+'</div><div><div class="porto">'+bloco.porto+'</div><h3>'+bloco.emoji+' '+bloco.titulo+'</h3></div></div>';
+    if(!b.aberto){
+      html+='<div class="cadeado">🔒 Esta jogada abre quando você conferir a jogada anterior.</div>';
+      div.innerHTML=html; cont.appendChild(div); return;
+    }
+    html+='<div class="bloco-corpo"><div class="texto">';
+    bloco.texto.forEach(function(p){ html+= (p.indexOf('<div')===0 || p.indexOf('<ul')===0 ? p : '<p>'+p+'</p>'); });
+    html+='</div>';
+    bloco.perguntas.forEach(function(p,j){
+      var ep=estPerg(i,j);
+      var tagTxt=p.tag==='conc'?'Conceito':'Aplicação';
+      html+='<div class="perg'+(ep.red?' red':'')+'" id="perg'+i+'_'+j+'">';
+      html+='<span class="tag '+p.tag+'">'+tagTxt+'</span>';
+      html+='<label>'+(j+1)+'. '+p.q+'</label>';
+      html+='<textarea id="ta'+i+'_'+j+'" oninput="digitou('+i+','+j+')">'+(ep.resp||'').replace(/</g,'&lt;')+'</textarea>';
+      html+='<div class="aviso" id="av'+i+'_'+j+'"></div>';
+      html+='<div class="modelo" id="mod'+i+'_'+j+'"><span class="lab">Resposta-modelo</span><p>'+p.modelo+'</p>';
+      html+='<div class="chk" id="chk'+i+'_'+j+'"></div></div>';
+      html+='</div>';
+    });
+    html+='<button class="conferir" id="conf'+i+'" onclick="conferir('+i+')">✔️ Conferir esta jogada</button>';
+    html+='<div class="status-bloco" id="st'+i+'"></div>';
+    if(i<BLOCOS.length-1){ html+='<div class="prox" id="px'+i+'"></div>'; }
+    html+='</div>';
+    div.innerHTML=html;
+    cont.appendChild(div);
+  });
+  BLOCOS.forEach(function(bloco,i){
+    var b=estBloco(i);
+    if(b.aberto && b.conferido){ mostrarConferido(i); }
+    atualizarBotao(i);
+  });
+  atualizarRelatorio();
+  atualizarTrilhaFim();
+}
+
+function digitou(i,j){
+  var ep=estPerg(i,j);
+  ep.resp=document.getElementById('ta'+i+'_'+j).value;
+  if(ep.red){
+    var bloco=BLOCOS[i];
+    if(!ehCopia(ep.resp, textoPlano(bloco), bloco.perguntas[j].q)){
+      ep.red=false;
+      var pd=document.getElementById('perg'+i+'_'+j); if(pd) pd.classList.remove('red');
+      var av=document.getElementById('av'+i+'_'+j); if(av){av.className='aviso'; av.textContent='';}
+    }
+  }
+  atualizarBotao(i);
+  salvar();
+  atualizarRelatorio();
+}
+
+function atualizarBotao(i){
+  var b=estBloco(i); if(!b.aberto) return;
+  var btn=document.getElementById('conf'+i); if(!btn) return;
+  if(b.conferido){ btn.textContent='✔️ Jogada conferida'; btn.disabled=true; return; }
+  var todas=true;
+  BLOCOS[i].perguntas.forEach(function(p,j){
+    var v=(document.getElementById('ta'+i+'_'+j)||{}).value||estPerg(i,j).resp||'';
+    if(v.trim().length<3) todas=false;
+  });
+  btn.disabled=!todas;
+}
+
+function conferir(i){
+  var bloco=BLOCOS[i], b=estBloco(i);
+  var algumBloqueado=false;
+  bloco.perguntas.forEach(function(p,j){
+    var ep=estPerg(i,j);
+    ep.resp=document.getElementById('ta'+i+'_'+j).value;
+    var av=document.getElementById('av'+i+'_'+j);
+    var copia=ehCopia(ep.resp, textoPlano(bloco), p.q);
+    if(copia){
+      if(!ep.warned || ep.resp===ep.tentou){
+        if(!ep.warned){ ep.warned=true; ep.tentou=ep.resp; }
+        av.className='aviso amarelo';
+        av.innerHTML='✋ Boa parte da sua resposta está igual ao texto. Tente <b>reescrever com as suas palavras</b> — explique como se fosse para um amigo, sem olhar o texto. Pode ficar mais curto e simples: o que vale é ser <b>SEU</b>.';
+        algumBloqueado=true;
+      } else {
+        ep.red=true;
+        av.className='aviso vermelho';
+        av.innerHTML='🔴 Esta resposta continua muito parecida com o texto. Ela foi aceita, mas ficou marcada para revisar. Se reescrever com as suas palavras, a marca some.';
+        document.getElementById('perg'+i+'_'+j).classList.add('red');
+      }
+    } else {
+      ep.red=false;
+      if(av){ av.className='aviso'; av.textContent=''; }
+      var pd=document.getElementById('perg'+i+'_'+j); if(pd) pd.classList.remove('red');
+    }
+  });
+  salvar();
+  if(algumBloqueado){
+    document.getElementById('st'+i).innerHTML='<span style="color:var(--ouro)">✍️ Reescreva as respostas marcadas em amarelo (mude o que escreveu) e clique em Conferir de novo.</span>';
+    return;
+  }
+  b.conferido=true;
+  if(i<BLOCOS.length-1){ estBloco(i+1).aberto=true; }
+  salvar();
+  render();
+  var alvo=document.getElementById('bloco'+i);
+  if(alvo) alvo.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function mostrarConferido(i){
+  var bloco=BLOCOS[i];
+  bloco.perguntas.forEach(function(p,j){
+    var ep=estPerg(i,j);
+    var mod=document.getElementById('mod'+i+'_'+j); if(mod) mod.classList.add('show');
+    if(ep.red){ var pd=document.getElementById('perg'+i+'_'+j); if(pd) pd.classList.add('red');
+      var av=document.getElementById('av'+i+'_'+j); if(av){av.className='aviso vermelho'; av.innerHTML='🔴 Resposta marcada para revisar (muito parecida com o texto). Reescreva com as suas palavras para tirar a marca.';}
+    }
+    var chk=document.getElementById('chk'+i+'_'+j); if(chk){
+      var h='<b style="font-size:.8rem;color:#8fe8c0">Confira você: a sua resposta…</b>';
+      p.chk.forEach(function(pt,k){
+        var val=ep.chk[k]||'';
+        h+='<div class="item"><span>'+pt+'</span><span class="simnao">'
+         +'<button class="sim'+(val==='sim'?' ativo':'')+'" onclick="marcarChk('+i+','+j+','+k+',\'sim\')">Sim</button>'
+         +'<button class="nao'+(val==='nao'?' ativo':'')+'" onclick="marcarChk('+i+','+j+','+k+',\'nao\')">Não</button>'
+         +'</span></div>';
+      });
+      chk.innerHTML=h;
+    }
+  });
+  atualizarStatusBloco(i);
+  var btn=document.getElementById('conf'+i); if(btn){ btn.textContent='✔️ Jogada conferida'; btn.disabled=true; }
+  if(i<BLOCOS.length-1){
+    var px=document.getElementById('px'+i);
+    if(px) px.innerHTML='<a href="#bloco'+(i+1)+'" onclick="irBloco('+(i+1)+');return false;">➡️ Ir para a próxima jogada</a>';
+  }
+}
+
+function marcarChk(i,j,k,val){
+  var ep=estPerg(i,j); ep.chk[k]=val;
+  salvar(); mostrarConferido(i); atualizarStatusBloco(i); atualizarRelatorio();
+}
+
+function statusPergunta(i,j){
+  var ep=estPerg(i,j), p=BLOCOS[i].perguntas[j];
+  if(ep.red) return 'revisar';
+  var temNao=false, todasResp=true;
+  p.chk.forEach(function(pt,k){ if(ep.chk[k]==='nao') temNao=true; if(!ep.chk[k]) todasResp=false; });
+  if(temNao) return 'revisar';
+  if(!todasResp) return 'pendente';
+  return 'ok';
+}
+function atualizarStatusBloco(i){
+  var st=document.getElementById('st'+i); if(!st) return;
+  var revisar=false, pendente=false;
+  BLOCOS[i].perguntas.forEach(function(p,j){ var s=statusPergunta(i,j); if(s==='revisar')revisar=true; if(s==='pendente')pendente=true; });
+  if(revisar) st.innerHTML='<span style="color:#ffb3b3">🔁 Esta jogada tem pontos para revisar.</span>';
+  else if(pendente) st.innerHTML='<span style="color:var(--ouro)">📝 Responda a autoavaliação (Sim/Não) de cada pergunta.</span>';
+  else st.innerHTML='<span style="color:#8fe8c0">✅ Jogada concluída com sucesso!</span>';
+  atualizarRelatorio();
+}
+
+function atualizarRelatorio(){
+  var lista=[], totalConf=0, totalRed=0, totalNao=0;
+  BLOCOS.forEach(function(bloco,i){
+    var b=estBloco(i); if(!b.conferido) return; totalConf++;
+    bloco.perguntas.forEach(function(p,j){
+      var ep=estPerg(i,j);
+      if(ep.red){ totalRed++; lista.push('Jogada '+(i+1)+' ('+bloco.titulo+'): pergunta '+(j+1)+' — resposta muito parecida com o texto.'); }
+      p.chk.forEach(function(pt,k){ if(ep.chk[k]==='nao'){ totalNao++; lista.push('Jogada '+(i+1)+' ('+bloco.titulo+'): revisar — "'+pt+'"'); } });
+    });
+  });
+  var rev=document.getElementById('revisar'), rl=document.getElementById('revisar-lista');
+  if(lista.length){ rev.style.display='block'; rl.innerHTML=lista.map(function(x){return '<li>'+x+'</li>';}).join(''); }
+  else { rev.style.display='none'; rl.innerHTML=''; }
+  var rc=document.getElementById('rel-conteudo');
+  rc.innerHTML='<b>Jogadas conferidas:</b> '+totalConf+' de '+BLOCOS.length+'.<br>'
+    +'<b>Respostas marcadas (muito parecidas com o texto):</b> '+totalRed+'.<br>'
+    +'<b>Pontos marcados como "Não" na autoavaliação:</b> '+totalNao+'.<br>'
+    +(lista.length? '<span style="color:#ffb3b3">Há '+lista.length+' ponto(s) para revisar (lista acima).</span>' : '<span style="color:#8fe8c0">Sem pontos pendentes para revisar. 👏</span>');
+}
+
+/* ====== EXPORTAR / IMPORTAR / ZERAR ====== */
+function exportar(){
+  var dados=JSON.stringify(estado,null,2);
+  var blob=new Blob([dados],{type:'application/json'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='leitura-guiada_tabuleiro-do-poder.json'; a.click();
+}
+function importar(ev){
+  var f=ev.target.files[0]; if(!f) return;
+  var r=new FileReader();
+  r.onload=function(){ try{ estado=JSON.parse(r.result); salvar(); render(); mostrarModal('✅ Progresso importado!',false); }catch(e){ mostrarModal('❌ Arquivo inválido.',false); } };
+  r.readAsText(f);
+}
+var acaoZerar=null;
+function pedirZerar(){ acaoZerar=true; mostrarModal('Tem certeza que quer apagar TODO o progresso desta leitura? (O Quiz continua destravado se já tiver sido destravado.)',true); }
+function mostrarModal(txt,confirmar){
+  document.getElementById('modal-txt').innerHTML=txt;
+  document.getElementById('modal').classList.add('show');
+  document.getElementById('modal-cancel').style.display=confirmar?'inline-block':'none';
+  document.getElementById('modal-ok').textContent=confirmar?'Sim, apagar':'Ok';
+  document.getElementById('modal-ok').onclick=function(){ if(confirmar && acaoZerar){ var c=estado.concluido, ce=estado.concluidoEm; estado={blocos:{}}; if(c){estado.concluido=true; estado.concluidoEm=ce;} salvar(); render(); } acaoZerar=null; fecharModal(); };
+}
+function fecharModal(){ document.getElementById('modal').classList.remove('show'); }
+
+render();
+</script>
+</body>
+</html>

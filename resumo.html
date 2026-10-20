@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resumo · Tabuleiro do Poder · Geografia 9º</title>
+<style>
+  :root{--palco:#10141c;--palco2:#171d28;--aco:#28324a;--aco2:#3a4766;--ambar:#f2b84b;--ciano:#38bdf8;--terra:#ff5d6c;--verde:#3ddc97;--vermelho:#ff5d6c;--texto:#edf1f8;--cinza:#94a0b8}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:repeating-linear-gradient(45deg,rgba(255,255,255,.015) 0 22px,transparent 22px 44px),radial-gradient(1100px 480px at 50% -10%,#1d2740,#10141c 60%),var(--palco);color:var(--texto);line-height:1.6;padding-bottom:60px}
+  header{background:linear-gradient(120deg,#2a1a22,#1b2236 50%,#2a1a22);padding:26px 18px;text-align:center;box-shadow:0 4px 18px rgba(0,0,0,.5);border-bottom:4px solid var(--ambar)}
+  header .selo{font-size:.78rem;letter-spacing:2px;color:#f6deaa;text-transform:uppercase}
+  header h1{font-size:1.5rem;margin:6px 0 2px}
+  header p{color:#d5dcea;font-size:.92rem}
+  .wrap{max-width:900px;margin:0 auto;padding:16px}
+  .barra-nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+  .barra-nav a{background:var(--palco2);color:var(--texto);text-decoration:none;padding:7px 12px;border-radius:20px;font-size:.85rem;border:1px solid var(--aco)}
+  .barra-nav a.on{background:var(--ambar);color:#2a1c00;font-weight:bold}
+  .barra-nav a.lock{opacity:.5}
+  .intro{background:var(--palco2);border:1px solid var(--aco);border-radius:14px;padding:16px;margin-bottom:16px}
+  .intro h2{color:var(--ambar);font-size:1.1rem;margin-bottom:8px}
+  .sec{margin:26px 0 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .sec h2{font-size:1.25rem}
+  .sec .pill{font-size:.7rem;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:12px;background:var(--ambar);color:#2a1c00;font-weight:bold}
+  .sec .pill.ave{background:var(--ciano);color:#031f2e}
+  .sec .pill.mam{background:var(--terra);color:#2b0509}
+  .sec .pill.all{background:var(--verde);color:#032418}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+  .card{background:var(--palco2);border:1px solid var(--aco);border-radius:14px;padding:14px;border-top:4px solid var(--ambar)}
+  .card.ave{border-top-color:var(--ciano)}
+  .card.mam{border-top-color:var(--terra)}
+  .card h3{font-size:1rem;margin-bottom:8px}
+  .card ul{margin-left:18px}
+  .card li{margin-bottom:5px;font-size:.93rem}
+  .card b{color:var(--ambar)}
+  .card.ave b{color:var(--ciano)}
+  .card.mam b{color:var(--terra)}
+  .postit{background:#ffe88a;color:#3a2a00;border-radius:4px;padding:12px 14px;font-size:.92rem;box-shadow:3px 4px 10px rgba(0,0,0,.4);transform:rotate(-1deg);margin:12px 0}
+  .postit b{color:#7a4a00}
+  .peg{background:#3a1414;border:2px solid var(--vermelho);border-radius:12px;padding:12px 14px;margin:12px 0;font-size:.92rem}
+  .peg b{color:#ffb3b3}
+  .narrador{background:#132233;border-left:4px solid var(--ciano);border-radius:0 12px 12px 0;padding:10px 14px;margin:12px 0;font-size:.92rem;font-style:italic;color:#d6e9f7}
+  .flips{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+  .flip{perspective:900px;height:190px;cursor:pointer}
+  .flip .inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+  .flip.on .inner{transform:rotateY(180deg)}
+  .flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:.88rem}
+  .flip .front{background:linear-gradient(135deg,#20293d,#171d28);border:1px solid var(--aco2);font-weight:bold}
+  .flip .front small{display:block;color:var(--cinza);font-weight:normal;font-size:.72rem;margin-top:6px}
+  .flip .back{background:#0e2b22;border:1px solid var(--verde);transform:rotateY(180deg)}
+  .tabela{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:8px}
+  .tabela th,.tabela td{border:1px solid var(--aco);padding:7px 9px;text-align:left;vertical-align:top}
+  .tabela th{background:#1a2132}
+  .tabela th.rep{color:var(--ambar)} .tabela th.ave{color:var(--ciano)} .tabela th.mam{color:var(--terra)}
+  .scroll{overflow-x:auto}
+  .fluxo{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin-top:8px}
+  .fluxo .et{flex:1;min-width:120px;background:#121722;border:1px solid var(--aco2);border-left:4px solid var(--ciano);border-radius:0 10px 10px 0;padding:10px;font-size:.86rem}
+  .fluxo .et b{color:var(--ciano)}
+  .gloss{columns:2;column-gap:18px}
+  .gloss div{break-inside:avoid;margin-bottom:8px;font-size:.9rem}
+  .gloss b{color:var(--ambar)}
+  @media(max-width:600px){.gloss{columns:1}}
+  .fim{background:linear-gradient(120deg,#12261f,#163a2c);border:2px solid var(--verde);border-radius:16px;padding:18px;margin-top:24px;text-align:center}
+  .fim h3{color:#8fe8c0;margin-bottom:8px}
+  .fim button{background:var(--verde);color:#032418;border:none;border-radius:10px;padding:12px 20px;font-size:1rem;font-weight:bold;margin:6px;cursor:pointer;font-family:inherit}
+  .fim button:disabled{background:#1c2436;color:#6c7891;cursor:not-allowed}
+  .fim a.btn{display:inline-block;margin:6px;background:var(--ciano);color:#031f2e;text-decoration:none;font-weight:bold;padding:12px 20px;border-radius:10px}
+  .fim a.btn.off{background:#1c2436;color:#6c7891;pointer-events:none}
+  .painel{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;background:var(--palco2);border:1px solid var(--aco);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:.85rem}
+  .mini{background:var(--palco);color:var(--texto);border:1px solid var(--aco2);border-radius:8px;padding:6px 10px;font-size:.8rem;cursor:pointer;font-family:inherit}
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(8,10,16,.97);z-index:50;align-items:center;justify-content:center;padding:16px}
+  .modal-bg.show{display:flex}
+  .modal{background:var(--palco2);border:1px solid var(--ambar);border-radius:14px;padding:22px;max-width:440px;text-align:center}
+  .modal p{margin-bottom:14px}
+  .modal .big{font-size:2.2rem}
+  .modal a{display:inline-block;background:var(--ambar);color:#2a1c00;border-radius:8px;padding:10px 18px;font-weight:bold;text-decoration:none}
+  .rodape{text-align:center;color:var(--cinza);font-size:.8rem;margin-top:24px}
+  .sub{font-size:1.02rem;margin:18px 0 8px;color:#fff}
+  .pill.fin{background:var(--verde);color:#032418} .pill.les{background:var(--terra);color:#2b0509} .pill.sep{background:var(--ciano);color:#031f2e}
+  .card.fin{border-top-color:var(--verde)} .card.fin b{color:var(--verde)}
+  .card.les{border-top-color:var(--terra)} .card.les b{color:var(--terra)}
+  .card.sep{border-top-color:var(--ciano)} .card.sep b{color:var(--ciano)}
+  .grid{margin:12px 0}
+  .tabela b.g{color:var(--verde)} .tabela th.r{color:var(--terra)} .tabela th.c{color:var(--ciano)}
+  .tl{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px;position:relative}
+  .tl-it{flex:1;min-width:140px;background:#121722;border:1px solid var(--aco2);border-top:4px solid var(--verde);border-radius:10px;padding:9px 10px;font-size:.84rem;position:relative}
+  .tl-it b{display:block;font-size:.92rem;margin-bottom:2px;color:var(--verde)}
+  .tl-it.les{border-top-color:var(--terra)} .tl-it.les b{color:var(--terra)}
+  .tl-it.sep{border-top-color:var(--ciano)} .tl-it.sep b{color:var(--ciano)}
+  .scroll{margin:10px 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="selo">Tabuleiro do Poder · Geografia 9º ano · CCF</div>
+  <h1>🗺️ Resumo — Mapa do Tabuleiro</h1>
+  <p>Tudo que cai, em linhas do tempo, tabelas, cards, cartas e post-its · Capítulos 16, 17 e 18</p>
+</header>
+
+<div class="wrap">
+  <nav class="barra-nav" id="nav">
+    <a href="leitura-guiada.html">📖 Leitura Guiada</a>
+    <a href="quiz.html">🎯 Quiz</a>
+    <a class="on" href="resumo.html">🗺️ Resumo</a>
+    <a href="simulado.html" data-etapa="simulado">📝 Simulado</a>
+    <a href="index.html">🏠 Início</a>
+  </nav>
+
+  <div class="intro">
+    <h2>🗺️ Mapa do Tabuleiro</h2>
+    <p>Use este resumo para fechar as dúvidas que o Quiz mostrou e para revisar na véspera. Tudo aqui saiu do seu livro (Callis Geografia 9 – Livro 2, caps. 16 a 18). Leia até o fim: lá embaixo está o botão <b>"Li o resumo até o fim"</b>, que destrava o <b>📝 Simulado</b>.</p>
+  </div>
+  <div class="painel"><span id="salvo">📏 Rolagem máxima: 0%</span><button class="mini" onclick="exportar()">📥 Exportar</button></div>
+
+  <div class="narrador">🎙️ Nota do narrador: neste tabuleiro jogam-se duas partidas ao mesmo tempo. Numa, as peças são <b>fichas de dinheiro</b> que viajam o mundo em segundos. Na outra, as peças são <b>povos e países</b> que disputam território, gás e identidade. Repare como as duas se cruzam: o FMI aparece na crise grega, e o gás aparece na Crimeia.</div>
+
+  <!-- ================= CAP 16 ================= -->
+  <div class="sec"><span class="pill fin">Capítulo 16</span><h2>🪙 O jogo do dinheiro</h2></div>
+
+  <h3 class="sub">⏳ A evolução da ficha</h3>
+  <div class="tl">
+    <div class="tl-it fin"><b>Trocas diretas</b>trigo por tecido — difícil achar o "justo"</div>
+    <div class="tl-it fin"><b>Equivalentes universais</b>sal, couro, ouro, prata, bronze (não estragam)</div>
+    <div class="tl-it fin"><b>Capitalismo comercial</b>metais viram moedas cunhadas</div>
+    <div class="tl-it fin"><b>Século XIX</b>moedas de metal comum e cédulas de papel</div>
+    <div class="tl-it fin"><b>Padrão-ouro</b>reserva de ouro = lastro da moeda</div>
+    <div class="tl-it fin"><b>1944 · Bretton Woods</b>padrão dólar-ouro: US$ 35 = 1 onça; FMI e Bird</div>
+  </div>
+  <div class="postit">📌 <b>Dica de prova:</b> imprimir dinheiro além das reservas → moeda desvaloriza → <b>inflação</b> (perda da capacidade de compra). Lastro = o ouro/prata que garante a moeda.</div>
+
+  <div class="grid">
+    <div class="card fin"><h3>🏦 Bretton Woods (fim de 1944)</h3><ul>
+      <li>Na 2ª Guerra, os <b>EUA acumularam ouro</b> vendendo à Europa; os outros gastaram o seu.</li>
+      <li>Padrão <b>dólar-ouro</b>: 35 dólares = 1 onça (28,35 g).</li>
+      <li>Dólar vira <b>moeda internacional</b> → vantagem para os EUA.</li></ul></div>
+    <div class="card fin"><h3>🌐 FMI × Bird</h3><ul>
+      <li><b>FMI</b>: empresta a países em crise e endividados. Exige <b>corte de gastos</b> e <b>abertura comercial e financeira</b> → risco de investimentos especulativos.</li>
+      <li><b>Bird (Banco Mundial)</b>: reconstruiu <b>Japão e Europa Ocidental</b>; hoje financia desenvolvimento na América Latina, Ásia e África.</li>
+      <li>Os dois são <b>multilaterais</b> (vários países).</li></ul></div>
+    <div class="card fin"><h3>⚖️ Globalização desigual</h3><ul>
+      <li>Globalização = aceleração das trocas, mas <b>com relações de poder</b>.</li>
+      <li>Dólar-ouro beneficiou mais os <b>EUA</b>; exigências do FMI protegeram mais os <b>investidores</b> que os cidadãos.</li>
+      <li><b>Neoliberalismo</b>: Estado interfere menos, desmonte do bem-estar social.</li></ul></div>
+  </div>
+
+  <h3 class="sub">🏭 Os três setores da economia</h3>
+  <div class="scroll"><table class="tabela">
+    <thead><tr><th>Setor</th><th>O que faz</th><th>Exemplos do livro</th></tr></thead>
+    <tbody>
+      <tr><td><b class="g">Produtivo</b></td><td>Produz bens e presta serviços</td><td>Granja de ovos, fábrica de calçados, hotel</td></tr>
+      <tr><td><b class="g">Comercial</b></td><td>Distribui bens e serviços feitos por outros</td><td>Loja de roupas, supermercado, cinema, agência de turismo</td></tr>
+      <tr><td><b class="g">Financeiro</b></td><td>Custeia o mercado: financia a produção, o consumo e os investimentos</td><td>Bancos, bolsas, títulos da dívida pública</td></tr>
+    </tbody>
+  </table></div>
+  <div class="peg">⚠️ <b>Pegadinha:</b> o setor comercial <b>não fabrica</b> nada. E o Estado também usa crédito do setor financeiro em grandes obras (ex.: Rodoanel, com financiamento do Banco Mundial).</div>
+
+  <div class="grid">
+    <div class="card fin"><h3>🏛️ Bancos</h3><ul>
+      <li>Funções: <b>guardar</b> dinheiro/valores e <b>emprestar</b>.</li>
+      <li>Origem: babilônios e fenícios; banco moderno no <b>capitalismo comercial (séc. XV–XVIII)</b>.</li>
+      <li>Grandes Navegações e Revolução Industrial ampliaram seu papel → urbanização e economia de mercado.</li>
+      <li>Lucro: <b>juros</b> (porcentagem do valor emprestado). Mais clientes → mais empréstimos → mais juros.</li></ul></div>
+    <div class="card fin"><h3>📈 Bolsa de Valores</h3><ul>
+      <li>Surgiu no <b>séc. XVIII</b>; negocia <b>ações</b> e <b>títulos</b> via <b>corretora</b>.</li>
+      <li>Investidor ganha com <b>dividendos</b> (parte do lucro) e com a <b>valorização</b>.</li>
+      <li><b>Especulação</b> → <b>bolha</b> (preço acima da realidade) → <b>estouro</b>.</li></ul></div>
+    <div class="card fin"><h3>📜 Títulos da dívida pública</h3><ul>
+      <li>Comprar título = <b>emprestar ao governo</b>.</li>
+      <li>Atrai com <b>juros altos</b> (definidos pelo <b>Banco Central</b>) ou com <b>segurança</b> (contas controladas).</li>
+      <li>Juros altos demais → impostos vão para a dívida; segurança → cortes em saúde e educação.</li></ul></div>
+    <div class="card fin"><h3>🏝️ Paraísos fiscais (offshore)</h3><ul>
+      <li>Pequenos territórios com sigilo bancário; medido pelo índice de <b>opacidade</b>.</li>
+      <li>Problemas: <b>corrupção</b>, <b>crime organizado</b> e <b>evasão fiscal</b> → <b>lavagem de dinheiro</b>.</li>
+      <li>Alegam <b>soberania</b>; Suíça = modelo antigo e criticado de sigilo.</li></ul></div>
+  </div>
+
+  <div class="flips">
+    <div class="flip" onclick="this.classList.toggle('on')"><div class="inner"><div class="face front">Banco Central<small>toque para virar</small></div><div class="face back">Instituição do governo: estabilidade da moeda, controle do crédito, fiscaliza bancos, define juros, guarda reservas e controla a emissão de dinheiro.</div></div></div>
+    <div class="flip" onclick="this.classList.toggle('on')"><div class="inner"><div class="face front">Mercado 24 horas<small>toque para virar</small></div><div class="face back">Quando as bolsas dos EUA fecham, as da Ásia abrem. Tóquio, Xangai e Hong Kong = termômetro. Europa: Londres e Frankfurt. Oceania: Sydney.</div></div></div>
+    <div class="flip" onclick="this.classList.toggle('on')"><div class="inner"><div class="face front">Ataque especulativo<small>toque para virar</small></div><div class="face back">Compram moeda estrangeira e vendem a local para forçar a desvalorização. Defesa: reservas de dólar, política cambial consistente, credibilidade.</div></div></div>
+    <div class="flip" onclick="this.classList.toggle('on')"><div class="inner"><div class="face front">Crédito<small>toque para virar</small></div><div class="face back">Liberação de dinheiro a pessoa ou empresa; ou financiamento: recebe o bem agora e paga depois, num prazo.</div></div></div>
+  </div>
+
+  <!-- ================= CAP 17 ================= -->
+  <div class="sec"><span class="pill les">Capítulo 17</span><h2>⚔️ Xeque no Leste e crise no Oeste</h2></div>
+
+  <div class="grid">
+    <div class="card les"><h3>🧭 Exterior próximo</h3><ul>
+      <li>Área do antigo Império Russo e da URSS que a Rússia quer manter sob influência.</li>
+      <li><b>Stálin (1922-1953)</b> deslocou populações → <b>minorias russas</b> no Cazaquistão, Uzbequistão, Moldávia, Belarus e Ucrânia.</li>
+      <li>Letônia, Estônia, Lituânia, Polônia, Hungria e Bulgária foram para a <b>UE e a OTAN</b>.</li></ul></div>
+    <div class="card les"><h3>🌊 Mar Negro</h3><ul>
+      <li>Semifechado; ligado ao Mediterrâneo pelos estreitos de <b>Bósforo e Dardanelos</b>.</li>
+      <li>Único lugar com <b>portos russos que nunca congelam</b>.</li>
+      <li>Rússia em crise após 1991, mas voltou a crescer e entrou nos <b>BRICS</b>.</li></ul></div>
+  </div>
+
+  <h3 class="sub">⏳ Linha do tempo das tensões russas</h3>
+  <div class="tl">
+    <div class="tl-it les"><b>1954</b>Kruschev transfere a Crimeia para a Ucrânia</div>
+    <div class="tl-it les"><b>1991</b>fim da URSS; Chechênia declara independência</div>
+    <div class="tl-it les"><b>1994–1996</b>1ª Guerra da Chechênia (Yeltsin); derrota russa</div>
+    <div class="tl-it les"><b>1999</b>2ª Guerra da Chechênia (Putin)</div>
+    <div class="tl-it les"><b>2002 · 2004</b>teatro Dubrovka · escola de Beslan</div>
+    <div class="tl-it les"><b>2013</b>Yanukovych recusa acordo com a UE</div>
+    <div class="tl-it les"><b>2014</b>queda de Yanukovych; referendo na Crimeia (março); Donetsk proclama independência (maio)</div>
+    <div class="tl-it les"><b>2015</b>cessar-fogo logo desrespeitado</div>
+    <div class="tl-it les"><b>24/02/2022</b>Rússia invade a Ucrânia</div>
+  </div>
+
+  <div class="scroll"><table class="tabela">
+    <thead><tr><th> </th><th class="r">⛰️ Chechênia</th><th class="r">🛡️ Crimeia</th><th class="r">⚔️ Donetsk (leste da Ucrânia)</th></tr></thead>
+    <tbody>
+      <tr><td><b>Onde</b></td><td>República da Federação Russa, no Cáucaso do Norte</td><td>Península no sul da Ucrânia, no Mar Negro</td><td>Leste da Ucrânia (com Lugansk)</td></tr>
+      <tr><td><b>Interesse russo</b></td><td>Petróleo, oleodutos e gasodutos, fronteiras, evitar novos separatismos</td><td>Gasodutos; população russa; saída para o mar</td><td>Gás natural e gasodutos; população russa</td></tr>
+      <tr><td><b>O que aconteceu</b></td><td>1ª Guerra (Yeltsin) → 2ª Guerra (Putin) → terrorismo → aproximação Rússia-Chechênia</td><td>Aproximação Ucrânia-UE → protestos → referendo (2014) → anexação → conflito</td><td>Busca de autonomia com apoio russo → guerra civil (2014) → cidades destruídas</td></tr>
+      <tr><td><b>Situação</b></td><td>Rússia não reconhece a soberania; governo checheno aliado de Putin</td><td>Anexação não reconhecida por EUA e UE; sanções (saída do G8)</td><td>Reconhecida pela Rússia antes da invasão de 2022</td></tr>
+    </tbody>
+  </table></div>
+  <div class="postit">📌 <b>Crimeia + Donetsk têm 2 pontos em comum:</b> (1) começaram com a <b>aproximação da Ucrânia com a União Europeia</b>; (2) têm <b>gás natural e gasodutos</b> importantes para a Rússia — que diz "proteger os russos", mas tem interesses econômicos.</div>
+  <div class="narrador">🎙️ Nota do narrador: na mesa de negociação, a Rússia exige <b>neutralidade militar e desmilitarização</b> da Ucrânia; Zelensky quer <b>segurança</b> de não ser atacado de novo. Sanções à Rússia: saída de empresas e congelamento de bens.</div>
+
+  <div class="grid">
+    <div class="card les"><h3>💶 Zona do Euro</h3><ul>
+      <li><b>Maastricht (1992)</b>: déficit <b>abaixo de 3%</b> do PIB e dívida <b>até 60%</b> do PIB; prazo de 10 anos.</li>
+      <li>Economias muito diferentes: <b>Alemanha</b> forte × <b>Portugal</b> com desindustrialização e dívida.</li>
+      <li><b>Crise de 2008</b> (nos EUA) → mais afetados: <b>Portugal, Itália, Irlanda, Grécia e Espanha</b>.</li></ul></div>
+    <div class="card les"><h3>🇬🇷 Grécia</h3><ul>
+      <li>Governo <b>escondia o déficit</b> → desconfiança → PIB caiu ~<b>25%</b>.</li>
+      <li>Ajuda do <b>FMI, BCE e Comissão Europeia</b> em troca de <b>austeridade</b> (cortar salários, aposentadorias, pensões; privatizações; demissões).</li>
+      <li>Dívida chegou a <b>207% do PIB</b> em 2020.</li></ul></div>
+    <div class="card les"><h3>🇬🇧 Brexit</h3><ul>
+      <li><i>Britain</i> + <i>exit</i>; referendo de <b>2016</b>: <b>51,9%</b> pela saída.</li>
+      <li>Reino Unido <b>não usa o euro</b> e <b>não está em Schengen</b> → argumentos frágeis; discurso nacionalista e xenófobo.</li>
+      <li>Cameron renuncia → Theresa May → saída em <b>1º/01/2021</b> (Boris Johnson).</li>
+      <li>Saída venceu só no interior da Inglaterra e em Gales; Londres, Escócia e Irlanda do Norte queriam ficar.</li></ul></div>
+  </div>
+
+  <!-- ================= CAP 18 ================= -->
+  <div class="sec"><span class="pill sep">Capítulo 18</span><h2>🧩 Peças que querem sair</h2></div>
+
+  <div class="grid">
+    <div class="card sep"><h3>🏳️ Nação e Estados nacionais</h3><ul>
+      <li>Europa: <b>50 países</b>, 10 milhões de km², 740 milhões de habitantes — muito recortada.</li>
+      <li>Países como hoje: <b>séculos XIX e XX</b>; antes, governos <b>absolutistas</b> (reinos e impérios).</li>
+      <li><b>Revolução Francesa (1789)</b>: governo deve seguir a vontade da <b>nação</b>.</li>
+      <li>Identidade nacional: <b>idioma, cultura, tradições e história comum</b> (e religião).</li></ul></div>
+    <div class="card sep"><h3>🧱 Como nasceram os países</h3><ul>
+      <li><b>Fragmentação dos antigos impérios</b> e disputas entre feudos, reinos e impérios.</li>
+      <li>Feudos unidos → Alemanha, França, Espanha, Itália.</li>
+      <li>Unidades pequenas mantidas → <b>microestados</b> (Andorra, Mônaco, Liechtenstein, San Marino, Vaticano, Malta).</li>
+      <li><b>Movimento separatista</b>: grupo que não se reconhece no Estado e quer formar novo país.</li></ul></div>
+  </div>
+
+  <h3 class="sub">⏳ Iugoslávia: do reino aos seis países</h3>
+  <div class="tl">
+    <div class="tl-it sep"><b>Séc. VI</b>povos eslavos chegam à Europa</div>
+    <div class="tl-it sep"><b>Pós-1ª Guerra</b>caem os impérios Austro-Húngaro e Otomano; reino dos sérvios, croatas e eslovenos</div>
+    <div class="tl-it sep"><b>1929</b>rei Alexander: "Iugoslávia" (terra dos eslavos do sul)</div>
+    <div class="tl-it sep"><b>2ª Guerra</b>invasão alemã; resistência de Tito</div>
+    <div class="tl-it sep"><b>1945–1980</b>Tito: autonomia regional + socialismo + ditadura</div>
+    <div class="tl-it sep"><b>1992–1995</b>Guerra da Bósnia: ~200 mil mortos, ~2 milhões de refugiados</div>
+    <div class="tl-it sep"><b>1998–1999</b>Kosovo (Milosevic; intervenção da OTAN)</div>
+    <div class="tl-it sep"><b>2003 · 2006</b>vira Sérvia e Montenegro · separação em dois países</div>
+  </div>
+  <div class="scroll"><table class="tabela">
+    <thead><tr><th>Povo / região</th><th>Religião predominante</th><th>Influência</th></tr></thead>
+    <tbody>
+      <tr><td>Eslovênia e Croácia</td><td>Católica</td><td>Europa Ocidental (Império Austro-Húngaro)</td></tr>
+      <tr><td>Sérvia e Montenegro</td><td>Cristã ortodoxa; alfabeto cirílico</td><td>Próximos da Rússia</td></tr>
+      <tr><td>Kosovo</td><td>Muçulmana</td><td>Próximo da Albânia (Império Turco-Otomano)</td></tr>
+      <tr><td>Bósnia e Herzegovina</td><td>Sem maioria: muçulmanos, ortodoxos e católicos</td><td>Mistura — palco da guerra mais violenta</td></tr>
+    </tbody>
+  </table></div>
+  <div class="postit">📌 <b>Os 6 países da antiga Iugoslávia:</b> Eslovênia, Croácia, Bósnia e Herzegovina, Montenegro, Sérvia e Macedônia. Ainda querem se separar: <b>Voivodina</b> (norte da Sérvia) e <b>Kosovo</b> (busca reconhecimento).</div>
+
+  <h3 class="sub">🇪🇸 Espanha: duas peças rebeldes</h3>
+  <div class="scroll"><table class="tabela">
+    <thead><tr><th> </th><th class="c">Catalunha</th><th class="c">País Basco</th></tr></thead>
+    <tbody>
+      <tr><td><b>Onde</b></td><td>Leste da Espanha</td><td>Norte da Espanha e sudoeste da França</td></tr>
+      <tr><td><b>Língua</b></td><td>Catalão — latina, parecida com o castelhano; oficial desde a redemocratização</td><td>Basco (<i>euskara</i>) — sem parentesco com outra língua da Europa Ocidental</td></tr>
+      <tr><td><b>Motivos</b></td><td>Identidade e história próprias + <b>economia</b>: região que mais produz riqueza e com menor desemprego</td><td>Cultura e história antigas (descendentes dos primeiros habitantes da Europa Ocidental)</td></tr>
+      <tr><td><b>Como lutou</b></td><td>Estatuto (2006) → vetos de 2010 → <b>referendo de 2017</b> (~90% sim, proibido por Madri, não reconhecido)</td><td><b>ETA</b> (anos 1950): sequestros, carros-bomba; paz em 2010-2011; fim em <b>2018</b></td></tr>
+      <tr><td><b>Símbolo</b></td><td>Bandeira <b>estelada</b> (luta pela independência) × <b>senyera</b> (oficial)</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+  <div class="peg">⚠️ <b>Pegadinha:</b> a unificação da Espanha foi feita pelo reino de <b>Leão e Castela</b> no fim do séc. XVI. A ditadura de <b>Franco</b> (1939-1975) negou autonomia às regiões; depois dela vieram as comunidades autônomas.</div>
+
+  <div class="grid">
+    <div class="card sep"><h3>🇬🇧 Reino Unido</h3><ul>
+      <li>4 unidades: Inglaterra, Escócia, País de Gales, Irlanda do Norte. Irlanda autônoma em <b>1922</b>.</li>
+      <li><b>Escócia</b>: referendo de 2014 (ficou por pouco); Brexit reacende o separatismo.</li>
+      <li><b>IRA</b>: católico, contra a permanência da Irlanda do Norte no RU (protestante/anglicano); conflitos 1960-1980; negociações a partir de 1990; fim em <b>2005</b>; <b>Sinn Féin</b> segue de forma pacífica.</li></ul></div>
+    <div class="card sep"><h3>💣 Terrorismo na Europa</h3><ul>
+      <li>Século passado: <b>ETA</b> e <b>IRA</b> (bombas, guerrilha).</li>
+      <li>Após <b>11/09/2001</b> e a Guerra ao Terror: <b>Al Qaeda</b> e <b>Estado Islâmico</b>.</li>
+      <li>Madri 2004 (191 mortos), Londres 2005 (52), Paris 2015 (Charlie Hebdo; 130 mortos em novembro), Bruxelas e Nice 2016…</li>
+      <li>Efeitos: <b>xenofobia</b>; Noruega 2011 mostra extremismo de <b>extrema direita</b>, sem motivo religioso.</li></ul></div>
+  </div>
+  <div class="postit">📌 <b>Brexit no Cap. 18:</b> <b>não é separatismo</b> (é o Reino Unido saindo da UE), mas <b>pode reacender</b> os separatismos da Escócia e da Irlanda do Norte, que votaram para ficar.</div>
+
+  <div class="sec"><h2>📚 Glossário</h2></div>
+  <div class="gloss">
+    <div><b>Financeirização</b> — fortalecimento das transações e dos mercados financeiros na economia mundial.</div>
+    <div><b>Equivalente universal</b> — produto aceito por todos para facilitar trocas (sal, couro, metais).</div>
+    <div><b>Lastro</b> — reserva de ouro/prata que garante o valor da moeda.</div>
+    <div><b>Inflação</b> — perda da capacidade de compra do dinheiro.</div>
+    <div><b>Multilateral</b> — que envolve vários países (ex.: FMI).</div>
+    <div><b>Crédito</b> — dinheiro liberado ou compra financiada, paga depois em prazo.</div>
+    <div><b>Juros</b> — porcentagem cobrada sobre o valor emprestado.</div>
+    <div><b>Ação</b> — documento de propriedade de uma fração de uma empresa.</div>
+    <div><b>Título</b> — documento de propriedade de um bem ou valor.</div>
+    <div><b>Dividendo</b> — parte do lucro distribuída aos acionistas.</div>
+    <div><b>Bolha especulativa</b> — preços muito acima da realidade, que estouram.</div>
+    <div><b>Opacidade</b> — falta de transparência; sigilo sobre o dono do dinheiro.</div>
+    <div><b>Evasão fiscal</b> — fugir dos impostos (evasão = abandonar, desistir).</div>
+    <div><b>Lavagem de dinheiro</b> — dar aparência legal a dinheiro ilegal.</div>
+    <div><b>Exterior próximo</b> — área de influência russa herdada do Império e da URSS.</div>
+    <div><b>BRICS</b> — Brasil, Rússia, Índia, China e África do Sul.</div>
+    <div><b>Austeridade</b> — corte forte de gastos públicos.</div>
+    <div><b>Zona do Euro</b> — países da UE que adotaram o euro.</div>
+    <div><b>Brexit</b> — <i>Britain + exit</i>: saída do Reino Unido da UE.</div>
+    <div><b>Nação</b> — grupo que se reconhece pela identidade comum.</div>
+    <div><b>Microestado</b> — país muito pequeno (ex.: Vaticano, Mônaco).</div>
+    <div><b>Separatismo</b> — luta de um grupo para formar um novo país.</div>
+  </div>
+
+  <div class="fim" id="fim">
+    <h3 id="fim-h3">🔒 Próxima etapa: Simulado</h3>
+    <p id="fim-txt">Role até aqui e confirme a leitura para destravar o Simulado.</p>
+    <button id="btn-li" onclick="confirmarLeitura()" disabled>✅ Li o resumo até o fim</button>
+    <a class="btn off" id="btn-prox" href="simulado.html">📝 Pronto para o Simulado!</a>
+  </div>
+
+  <div class="rodape">Feito com carinho para o jovem aprendiz. ♟️</div>
+</div>
+
+
+<div class="modal-bg" id="lock">
+  <div class="modal">
+    <div class="big">🔒</div>
+    <p><b>Esta etapa ainda está trancada.</b></p>
+    <p id="lock-txt">Para abrir o Resumo, envie o Quiz.</p>
+    <a href="index.html">Voltar ao início</a>
+  </div>
+</div>
+
+<script>
+/* ====== TRILHA COM CADEADOS (módulo comum do kit) ====== */
+var KIT='tabuleiro_poder_geo9';
+var TRILHA=[
+ {id:'leitura', chave:KIT+'_leitura_v1', nome:'Leitura Guiada', arquivo:'leitura-guiada.html', emoji:'📖'},
+ {id:'quiz', chave:KIT+'_quiz_v1', nome:'Quiz', arquivo:'quiz.html', emoji:'🎯'},
+ {id:'resumo', chave:KIT+'_resumo_v1', nome:'Resumo', arquivo:'resumo.html', emoji:'🗺️'},
+ {id:'simulado', chave:KIT+'_simulado_v1', nome:'Simulado', arquivo:'simulado.html', emoji:'📝'}
+];
+function lerJSON(k){ try{ var s=localStorage.getItem(k); return s?JSON.parse(s):null; }catch(e){ return null; } }
+function trilhaLiberada(){ var t=lerJSON(KIT+'_trilha_v1'); return !!(t&&t.liberadoPelosPais); }
+function etapaConcluida(id){ var e=TRILHA.filter(function(t){return t.id===id;})[0]; var d=lerJSON(e.chave); return !!(d&&d.concluido); }
+function podeAbrir(id){ var idx=TRILHA.map(function(t){return t.id;}).indexOf(id); if(idx<=0||trilhaLiberada()) return true; return etapaConcluida(TRILHA[idx-1].id); }
+function marcarNav(){
+  var links=document.querySelectorAll('#nav a[data-etapa]');
+  for(var i=0;i<links.length;i++){ var id=links[i].getAttribute('data-etapa'); if(!podeAbrir(id)){ links[i].classList.add('lock'); links[i].textContent='🔒 '+links[i].textContent.replace('🔒 ',''); } else { links[i].classList.remove('lock'); links[i].textContent=links[i].textContent.replace('🔒 ',''); } }
+}
+function checarTrava(){
+  if(podeAbrir('resumo')) return true;
+  var L=lerJSON(KIT+'_leitura_v1');
+  document.getElementById('lock-txt').textContent=(L&&L.concluido)?'Para abrir o Resumo, envie o Quiz.':'Para abrir o Resumo, conclua a Leitura Guiada e envie o Quiz.';
+  document.getElementById('lock').classList.add('show');
+  document.querySelector('.wrap').style.filter='blur(8px)';
+  document.querySelector('.wrap').setAttribute('aria-hidden','true');
+  return false;
+}
+
+/* ====== ESTADO DO RESUMO ====== */
+var CHAVE=KIT+'_resumo_v1'; var mem={}; var estado=carregar();
+function carregar(){ try{ var s=localStorage.getItem(CHAVE); if(s) return JSON.parse(s);}catch(e){ if(mem[CHAVE]) return JSON.parse(mem[CHAVE]); } return {rolagemMax:0}; }
+function salvar(){ var s=JSON.stringify(estado); try{ localStorage.setItem(CHAVE,s);}catch(e){ mem[CHAVE]=s; } document.getElementById('salvo').textContent='📏 Rolagem máxima: '+Math.round(estado.rolagemMax||0)+'%'; }
+function medirRolagem(){
+  var h=document.documentElement; var total=h.scrollHeight-h.clientHeight; var pct= total<=0?100:Math.min(100,(window.scrollY||h.scrollTop)/total*100);
+  if(pct>(estado.rolagemMax||0)){ estado.rolagemMax=pct; salvar(); }
+  var b=document.getElementById('btn-li'); if(!estado.concluido && (estado.rolagemMax||0)>=90){ b.disabled=false; }
+}
+function confirmarLeitura(){ if(estado.concluido) return; if((estado.rolagemMax||0)<90) return; estado.concluido=true; estado.concluidoEm=new Date().toISOString(); salvar(); atualizarFim(); }
+function atualizarFim(){
+  var h3=document.getElementById('fim-h3'), txt=document.getElementById('fim-txt'), b=document.getElementById('btn-li'), a=document.getElementById('btn-prox');
+  if(estado.concluido||trilhaLiberada()){ h3.textContent='✅ Resumo lido — Simulado destravado!'; txt.textContent=estado.concluido?'Agora encare o Simulado valendo, como se fosse a prova.':'Trilha liberada pelos pais.'; b.disabled=!!estado.concluido||(estado.rolagemMax||0)<90; b.textContent=estado.concluido?'✅ Resumo concluído':'✅ Li o resumo até o fim'; a.classList.remove('off'); }
+  else { h3.textContent='🔒 Próxima etapa: Simulado'; txt.textContent=(estado.rolagemMax||0)>=90?'Confirme a leitura para destravar o Simulado.':'Role até o fim da página para habilitar o botão (rolagem: '+Math.round(estado.rolagemMax||0)+'%).'; a.classList.add('off'); }
+  marcarNav();
+}
+function exportar(){ var blob=new Blob([JSON.stringify(estado,null,2)],{type:'application/json'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='resumo_tabuleiro-do-poder.json'; a.click(); }
+
+if(checarTrava()){ salvar(); atualizarFim(); window.addEventListener('scroll',function(){ medirRolagem(); atualizarFim(); }); setTimeout(function(){ medirRolagem(); atualizarFim(); },300); } else { marcarNav(); }
+</script>
+</body>
+</html>

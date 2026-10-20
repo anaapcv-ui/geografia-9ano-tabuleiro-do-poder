@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz · Tabuleiro do Poder · Geografia 9º</title>
+<style>
+  :root{--palco:#10141c;--palco2:#171d28;--aco:#28324a;--aco2:#3a4766;--ambar:#f2b84b;--ciano:#38bdf8;--terra:#ff5d6c;--verde:#3ddc97;--vermelho:#ff5d6c;--texto:#edf1f8;--cinza:#94a0b8}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:repeating-linear-gradient(45deg,rgba(255,255,255,.015) 0 22px,transparent 22px 44px),radial-gradient(1100px 480px at 50% -10%,#1d2740,#10141c 60%),var(--palco);color:var(--texto);line-height:1.6;padding-bottom:60px}
+  header{background:linear-gradient(120deg,#13261f,#1b2236);padding:26px 18px;text-align:center;box-shadow:0 4px 18px rgba(0,0,0,.5);border-bottom:4px solid var(--ciano)}
+  header .selo{font-size:.78rem;letter-spacing:2px;color:#cfeaff;text-transform:uppercase}
+  header h1{font-size:1.5rem;margin:6px 0 2px}
+  header p{color:#d5dcea;font-size:.92rem}
+  .wrap{max-width:820px;margin:0 auto;padding:16px}
+  .barra-nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+  .barra-nav a{background:var(--palco2);color:var(--texto);text-decoration:none;padding:7px 12px;border-radius:20px;font-size:.85rem;border:1px solid var(--aco)}
+  .barra-nav a.on{background:var(--ciano);color:#031f2e;font-weight:bold}
+  .barra-nav a.lock{opacity:.5}
+  .intro{background:var(--palco2);border:1px solid var(--aco);border-radius:14px;padding:16px;margin-bottom:16px}
+  .intro h2{color:var(--ciano);font-size:1.1rem;margin-bottom:8px}
+  .painel{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;background:var(--palco2);border:1px solid var(--aco);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:.85rem}
+  .painel .btns{display:flex;gap:6px;flex-wrap:wrap}
+  button{cursor:pointer;font-family:inherit}
+  .mini{background:var(--palco);color:var(--texto);border:1px solid var(--aco2);border-radius:8px;padding:6px 10px;font-size:.8rem}
+  .codigo{background:linear-gradient(120deg,#12261f,#1b4d3a);border:2px solid var(--verde);border-radius:14px;padding:16px;text-align:center;margin-bottom:16px;display:none}
+  .codigo.show{display:block}
+  .codigo .cod{font-size:1.8rem;font-weight:bold;letter-spacing:3px;color:#8fe8c0;margin:6px 0}
+  .progresso{height:10px;background:var(--aco);border-radius:6px;overflow:hidden;margin-bottom:16px}
+  .progresso div{height:100%;background:linear-gradient(90deg,var(--ambar),var(--ciano),var(--terra));width:0;transition:width .3s}
+  .q{background:var(--palco2);border:1px solid var(--aco);border-radius:16px;padding:16px;margin-bottom:14px}
+  .q .num{color:var(--ciano);font-weight:bold;font-size:.8rem;letter-spacing:1px;text-transform:uppercase}
+  .q .tema{float:right;font-size:.7rem;color:var(--cinza);background:var(--palco);border:1px solid var(--aco2);border-radius:10px;padding:2px 8px}
+  .q h3{font-size:1rem;margin:6px 0 10px;font-weight:600}
+  .alt{display:block;background:#121722;border:1px solid var(--aco2);border-radius:10px;padding:10px 12px;margin:6px 0;cursor:pointer}
+  .alt:hover{border-color:var(--ciano)}
+  .alt input{margin-right:8px}
+  .alt.sel{border-color:var(--ciano);background:#0e2433}
+  .alt.certa{border-color:var(--verde);background:#0e2b22}
+  .alt.errada{border-color:#555;background:#1a1e27;color:#aaa}
+  .alt.marcada-errada{border-color:var(--vermelho);background:#3a1414}
+  .exp{margin-top:8px;font-size:.88rem;padding:8px 10px;border-radius:8px;background:#121722;border-left:3px solid var(--ambar);display:none}
+  .exp.show{display:block}
+  .enviar{width:100%;background:var(--ciano);color:#031f2e;border:none;border-radius:12px;padding:14px;font-size:1.05rem;font-weight:bold;margin:10px 0}
+  .enviar:disabled{background:#1c2436;color:#6c7891;cursor:not-allowed}
+  .gab{background:var(--palco2);border:1px dashed var(--ciano);border-radius:14px;padding:16px;margin:16px 0;display:none}
+  .gab.show{display:block}
+  .gab input{padding:9px;border-radius:8px;border:1px solid var(--aco2);background:#0b0f17;color:var(--texto);font-size:1rem;width:180px;text-transform:uppercase}
+  .gab button{background:var(--ciano);color:#031f2e;border:none;border-radius:8px;padding:9px 14px;font-weight:bold;margin-left:6px}
+  .gab .msg{margin-top:8px;font-size:.9rem}
+  .trilha-fim{background:linear-gradient(120deg,#12261f,#163a2c);border:2px solid var(--verde);border-radius:16px;padding:18px;margin-top:18px;text-align:center}
+  .trilha-fim h3{color:#8fe8c0;margin-bottom:8px}
+  .trilha-fim a.btn{display:inline-block;margin-top:8px;background:var(--verde);color:#032418;text-decoration:none;font-weight:bold;padding:11px 20px;border-radius:10px}
+  .trilha-fim a.btn.off{background:#1c2436;color:#6c7891;pointer-events:none}
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(8,10,16,.97);z-index:50;align-items:center;justify-content:center;padding:16px}
+  .modal-bg.show{display:flex}
+  .modal{background:var(--palco2);border:1px solid var(--ciano);border-radius:14px;padding:22px;max-width:440px;text-align:center}
+  .modal p{margin-bottom:14px}
+  .modal .big{font-size:2.2rem}
+  .modal a,.modal button{display:inline-block;background:var(--ciano);color:#031f2e;border:none;border-radius:8px;padding:10px 18px;font-weight:bold;text-decoration:none}
+  .rodape{text-align:center;color:var(--cinza);font-size:.8rem;margin-top:24px}
+</style>
+</head>
+<body>
+<header>
+  <div class="selo">Tabuleiro do Poder · Geografia 9º ano · CCF</div>
+  <h1>🎯 Quiz — Rodada Rápida</h1>
+  <p>15 questões · Capítulos 16, 17 e 18 · Código MED para os pais</p>
+</header>
+
+<div class="wrap">
+  <nav class="barra-nav" id="nav">
+    <a href="leitura-guiada.html">📖 Leitura Guiada</a>
+    <a class="on" href="quiz.html">🎯 Quiz</a>
+    <a href="resumo.html" data-etapa="resumo">🗺️ Resumo</a>
+    <a href="simulado.html" data-etapa="simulado">📝 Simulado</a>
+    <a href="index.html">🏠 Início</a>
+  </nav>
+
+  <div class="codigo" id="codigo"><div>Seu código de liberação</div><div class="cod" id="cod"></div><div id="codtxt"></div></div>
+
+  <div class="intro">
+    <h2>🎯 Rodada Rápida do Tabuleiro</h2>
+    <p>Responda as <b>15 questões</b> (todas obrigatórias). Depois de <b>Enviar</b>, as respostas travam, sai o seu <b>código MED</b> e o gabarito comentado abre com o código. Ao enviar, o <b>🗺️ Resumo destrava</b>.</p>
+  </div>
+
+  <div class="painel">
+    <span id="salvo">💾 Progresso salvo automaticamente.</span>
+    <div class="btns">
+      <button class="mini" onclick="exportar()">📥 Exportar</button>
+      <button class="mini" onclick="document.getElementById('imp').click()">📤 Importar</button>
+      <input type="file" id="imp" accept="application/json" style="display:none" onchange="importar(event)">
+      <button class="mini" onclick="pedirZerar()">🗑️ Zerar tudo</button>
+    </div>
+  </div>
+
+  <div class="progresso"><div id="barra"></div></div>
+  <div id="questoes"></div>
+  <button class="enviar" id="btn-enviar" onclick="enviar()" disabled>📨 Enviar respostas (responda todas)</button>
+
+  <div class="gab" id="gab">
+    <b>🔑 Gabarito comentado:</b> digite o código MED que apareceu no topo.<br>
+    <input id="gab-in" placeholder="MED-XX-YY"><button onclick="abrirGab()">Ver gabarito</button>
+    <div class="msg" id="gab-msg"></div>
+  </div>
+
+  <div class="trilha-fim" id="trilha-fim">
+    <h3>🔒 Próxima etapa: Resumo</h3>
+    <p id="trilha-fim-txt">O Resumo destrava quando você enviar o Quiz.</p>
+    <a class="btn off" id="btn-prox" href="resumo.html">🗺️ Ir para o Resumo</a>
+  </div>
+
+  <div class="rodape">Feito com carinho para o jovem aprendiz. ♟️</div>
+</div>
+
+<div class="modal-bg" id="lock">
+  <div class="modal">
+    <div class="big">🔒</div>
+    <p><b>Esta etapa ainda está trancada.</b></p>
+    <p id="lock-txt">Para abrir o Quiz, conclua a Leitura Guiada.</p>
+    <a href="index.html">Voltar ao início</a>
+  </div>
+</div>
+<div class="modal-bg" id="modal" style="background:rgba(0,0,0,.75)">
+  <div class="modal">
+    <p id="modal-txt"></p>
+    <button onclick="fecharModal()" id="modal-ok">Ok</button>
+    <button class="mini" onclick="fecharModal()" id="modal-cancel" style="display:none;margin-left:8px">Cancelar</button>
+  </div>
+</div>
+
+<script>
+/* ====== TRILHA COM CADEADOS (módulo comum do kit) ====== */
+var KIT='tabuleiro_poder_geo9';
+var TRILHA=[
+ {id:'leitura', chave:KIT+'_leitura_v1', nome:'Leitura Guiada', arquivo:'leitura-guiada.html', emoji:'📖'},
+ {id:'quiz', chave:KIT+'_quiz_v1', nome:'Quiz', arquivo:'quiz.html', emoji:'🎯'},
+ {id:'resumo', chave:KIT+'_resumo_v1', nome:'Resumo', arquivo:'resumo.html', emoji:'🗺️'},
+ {id:'simulado', chave:KIT+'_simulado_v1', nome:'Simulado', arquivo:'simulado.html', emoji:'📝'}
+];
+function lerJSON(k){ try{ var s=localStorage.getItem(k); return s?JSON.parse(s):null; }catch(e){ return null; } }
+function trilhaLiberada(){ var t=lerJSON(KIT+'_trilha_v1'); return !!(t&&t.liberadoPelosPais); }
+function etapaConcluida(id){ var e=TRILHA.filter(function(t){return t.id===id;})[0]; var d=lerJSON(e.chave); return !!(d&&d.concluido); }
+function podeAbrir(id){ var idx=TRILHA.map(function(t){return t.id;}).indexOf(id); if(idx<=0||trilhaLiberada()) return true; return etapaConcluida(TRILHA[idx-1].id); }
+function marcarNav(){
+  var links=document.querySelectorAll('#nav a[data-etapa]');
+  for(var i=0;i<links.length;i++){ var id=links[i].getAttribute('data-etapa'); if(!podeAbrir(id)){ links[i].classList.add('lock'); links[i].textContent='🔒 '+links[i].textContent.replace('🔒 ',''); } else { links[i].classList.remove('lock'); links[i].textContent=links[i].textContent.replace('🔒 ',''); } }
+}
+function checarTrava(){
+  if(podeAbrir('quiz')) return true;
+  var L=lerJSON(KIT+'_leitura_v1'); var p=(L&&L.progresso)||{conferidos:0,total:14,chkPendentes:0};
+  var faltam=p.total-p.conferidos;
+  var txt= faltam>0 ? 'Para abrir o Quiz, conclua a Leitura Guiada: faltam '+faltam+' de '+p.total+' jogadas.' : 'Para abrir o Quiz, responda a autoavaliação Sim/Não da Leitura Guiada ('+p.chkPendentes+' ponto(s) pendente(s)).';
+  document.getElementById('lock-txt').textContent=txt;
+  document.getElementById('lock').classList.add('show');
+  document.querySelector('.wrap').style.filter='blur(8px)';
+  document.querySelector('.wrap').setAttribute('aria-hidden','true');
+  return false;
+}
+
+/* ====== QUESTÕES (conteúdo do livro Callis Geografia 9 L2, Caps 16, 17 e 18) — a correta é guardada pelo id ====== */
+var Q=[
+ {tema:"Cap. 16 · Moeda",p:"No padrão-ouro, as reservas de ouro guardadas por um governo funcionavam como:",alts:[
+  {id:"a",t:"o lastro da moeda, garantindo o valor do dinheiro em circulação.",ok:true,e:"Lastro é o metal guardado que funciona como o valor por trás do dinheiro: mais ouro, mais confiança."},
+  {id:"b",t:"a inflação, que aumenta a capacidade de compra.",e:"Inflação é o contrário: perda da capacidade de compra."},
+  {id:"c",t:"um equivalente universal usado só nas trocas diretas de trigo por tecido.",e:"Equivalentes universais facilitavam as trocas antes das cédulas; aqui o ouro guardado é garantia (lastro)."},
+  {id:"d",t:"um título da dívida pública vendido aos investidores.",e:"Título da dívida é um empréstimo ao governo, não reserva de ouro."}]},
+ {tema:"Cap. 16 · Bretton Woods",p:"A Conferência de Bretton Woods, no final de 1944, estabeleceu:",alts:[
+  {id:"a",t:"a criação do euro como moeda única da Europa.",e:"O euro vem do Tratado de Maastricht (1992)."},
+  {id:"b",t:"o fim de todas as reservas de ouro do mundo.",e:"O ouro continuou como base do sistema (dólar-ouro)."},
+  {id:"c",t:"o padrão dólar-ouro (35 dólares por onça) e a criação do FMI e do Bird.",ok:true,e:"Exatamente: paridade de 35 dólares por onça de ouro, FMI e Banco Mundial (Bird)."},
+  {id:"d",t:"a criação das primeiras bolsas de valores.",e:"As bolsas surgiram no século XVIII."}]},
+ {tema:"Cap. 16 · Setores",p:"Um supermercado que vende produtos feitos por outras empresas pertence ao setor:",alts:[
+  {id:"a",t:"produtivo.",e:"O produtivo fabrica bens ou presta serviços (granja, fábrica, hotel)."},
+  {id:"b",t:"comercial.",ok:true,e:"O setor comercial distribui bens e serviços produzidos por outras companhias."},
+  {id:"c",t:"financeiro.",e:"O financeiro faz empréstimos para os outros setores."},
+  {id:"d",t:"público.",e:"O livro divide a economia em produtivo, comercial e financeiro."}]},
+ {tema:"Cap. 16 · Bolsa",p:"Quem compra ações de uma empresa na Bolsa de Valores passa a:",alts:[
+  {id:"a",t:"ser dono de uma fração da empresa e pode receber dividendos.",ok:true,e:"Ação certifica a propriedade de uma fração da empresa; dividendo é parte do lucro distribuída aos acionistas."},
+  {id:"b",t:"emprestar dinheiro ao governo.",e:"Isso é comprar título da dívida pública."},
+  {id:"c",t:"ter lucro garantido, sem nenhum risco.",e:"Ações são sempre uma opção de risco."},
+  {id:"d",t:"controlar a emissão de dinheiro do país.",e:"Isso é papel do Banco Central."}]},
+ {tema:"Cap. 16 · Paraísos fiscais",p:"Nos paraísos fiscais, a opacidade é preocupante porque:",alts:[
+  {id:"a",t:"obriga os investidores a provar a origem de todo o dinheiro.",e:"É o contrário: não há necessidade de comprovar a origem."},
+  {id:"b",t:"garante sigilo sobre quem é o dono das contas, favorecendo corrupção, crime organizado e evasão fiscal.",ok:true,e:"Opacidade = ausência de transparência; facilita esconder e lavar dinheiro ilegal."},
+  {id:"c",t:"aumenta os impostos sobre grandes fortunas.",e:"Os ricos usam paraísos justamente para fugir dos impostos."},
+  {id:"d",t:"impede que o mercado funcione 24 horas.",e:"Não há essa relação no livro."}]},
+ {tema:"Cap. 17 · Rússia",p:"O Mar Negro é estratégico para a Rússia porque:",alts:[
+  {id:"a",t:"é o maior oceano do planeta.",e:"O Mar Negro é um mar semifechado."},
+  {id:"b",t:"separa a Rússia da China.",e:"Não é a localização dele."},
+  {id:"c",t:"permite portos que nunca congelam e saída para o Mediterrâneo pelos estreitos de Bósforo e Dardanelos.",ok:true,e:"É o único lugar onde a Rússia pode ter portos navegáveis o ano todo, com passagem até o Atlântico."},
+  {id:"d",t:"é onde fica a Chechênia.",e:"Confunde lugares: a Chechênia é uma república no Cáucaso do Norte."}]},
+ {tema:"Cap. 17 · Chechênia",p:"Sobre a Chechênia, é correto afirmar:",alts:[
+  {id:"a",t:"é uma república da Federação Russa no Cáucaso do Norte, de maioria muçulmana sunita, com reservas de petróleo.",ok:true,e:"Tudo isso está no livro e ajuda a explicar o interesse russo."},
+  {id:"b",t:"teve sua independência reconhecida pela Rússia em 1996.",e:"Mesmo com a derrota russa de 1996, a independência não foi reconhecida."},
+  {id:"c",t:"tem como religião predominante o cristianismo ortodoxo.",e:"O cristianismo ortodoxo era a religião oficial do Império Russo; na Chechênia predomina o islamismo sunita."},
+  {id:"d",t:"fica no litoral do Mar Báltico.",e:"Fica no Cáucaso do Norte."}]},
+ {tema:"Cap. 17 · Crimeia",p:"O que desencadeou a crise que levou à anexação da Crimeia pela Rússia em 2014?",alts:[
+  {id:"a",t:"A entrada da Ucrânia na Zona do Euro.",e:"A Ucrânia não entrou na Zona do Euro."},
+  {id:"b",t:"A recusa do presidente Viktor Yanukovych em assinar um acordo com a União Europeia, seguida de protestos e de sua queda.",ok:true,e:"A pressão de Putin levou Yanukovych a recuar; vieram os protestos, a derrubada em 2014, as tropas e o referendo."},
+  {id:"c",t:"A transferência da Crimeia para a Rússia feita por Kruschev em 1954.",e:"Em 1954 Kruschev transferiu a Crimeia para a Ucrânia."},
+  {id:"d",t:"A saída do Reino Unido da União Europeia.",e:"O Brexit é de 2016 e não tem relação direta."}]},
+ {tema:"Cap. 17 · Zona do Euro",p:"Pelo Tratado de Maastricht (1992), para adotar o euro um país precisava ter:",alts:[
+  {id:"a",t:"dívida pública acima de 100% do PIB.",e:"O limite era de no máximo 60% do PIB."},
+  {id:"b",t:"saído antes da OTAN.",e:"A OTAN não aparece entre as condições."},
+  {id:"c",t:"aprovação do FMI e do Banco Mundial.",e:"As condições eram de contas públicas, não de aprovação dessas instituições."},
+  {id:"d",t:"déficit orçamentário abaixo de 3% do PIB e dívida pública de no máximo 60% do PIB.",ok:true,e:"Essas eram as duas condições principais."}]},
+ {tema:"Cap. 17 · Brexit",p:"Sobre o Brexit, é correto afirmar:",alts:[
+  {id:"a",t:"o Reino Unido abandonou o euro e voltou a usar a libra.",e:"O Reino Unido nunca usou o euro."},
+  {id:"b",t:"foi aprovado em referendo em 2016, com 51,9% dos votos, e a saída oficial ocorreu em 1º de janeiro de 2021.",ok:true,e:"Referendo de 2016 (51,9% pela saída); saída oficial em 1º/01/2021."},
+  {id:"c",t:"a saída venceu em todas as regiões, inclusive na Escócia e em Londres.",e:"Escócia, Irlanda do Norte e Londres votaram por permanecer."},
+  {id:"d",t:"foi um movimento separatista para tornar a Escócia independente.",e:"O Brexit não é separatismo: é a saída do Reino Unido da União Europeia."}]},
+ {tema:"Cap. 18 · Nação",p:"Segundo o capítulo, o principal fator para a formação dos países europeus como os conhecemos foi:",alts:[
+  {id:"a",t:"a fragmentação dos antigos impérios, após longas disputas entre feudos, reinos e impérios.",ok:true,e:"Os países atuais resultam dessas disputas; alguns feudos se uniram, outros viraram microestados."},
+  {id:"b",t:"a criação do euro.",e:"O euro é muito posterior (1992)."},
+  {id:"c",t:"a divisão feita pelo FMI depois de 1944.",e:"O FMI não define fronteiras."},
+  {id:"d",t:"o Brexit, em 2016.",e:"O Brexit é a saída do Reino Unido da UE, não a origem dos Estados."}]},
+ {tema:"Cap. 18 · Iugoslávia",p:"O que ajudou a Iugoslávia a se manter unida até 1980, apesar de suas diferenças internas?",alts:[
+  {id:"a",t:"A adoção do euro como moeda comum.",e:"O euro não existia e não tem relação com a Iugoslávia."},
+  {id:"b",t:"O fato de todos os seus povos terem a mesma religião.",e:"Havia católicos, ortodoxos e muçulmanos."},
+  {id:"c",t:"A anexação do país pela Rússia.",e:"Isso não aconteceu."},
+  {id:"d",t:"O governo de Tito, com autonomia para as regiões, o ideal do socialismo e um regime de ditadura.",ok:true,e:"Essas foram as três estratégias de Tito; após sua morte, em 1980, as disputas voltaram."}]},
+ {tema:"Cap. 18 · Catalunha",p:"Sobre o referendo de independência da Catalunha, em 2017:",alts:[
+  {id:"a",t:"foi proibido por Madri, que enviou tropas para apreender urnas; cerca de 90% dos votantes apoiaram a independência, que não foi reconhecida.",ok:true,e:"A reação deixou o governo central com imagem autoritária; o líder catalão, refugiado na Bélgica, teve a prisão determinada."},
+  {id:"b",t:"foi organizado pelo próprio governo de Madri, que aceitou o resultado.",e:"Madri proibiu o referendo e não reconheceu a independência."},
+  {id:"c",t:"aprovou a união da Catalunha com a França.",e:"Votava-se a independência em relação à Espanha."},
+  {id:"d",t:"foi conduzido pelo grupo ETA.",e:"O ETA é basco; não tem relação com o referendo catalão."}]},
+ {tema:"Cap. 18 · Espanha",p:"O País Basco se diferencia da Catalunha, entre outros pontos, porque:",alts:[
+  {id:"a",t:"os bascos falam uma língua latina muito parecida com o castelhano.",e:"Essa descrição é do catalão; o basco não tem parentesco com outras línguas da Europa Ocidental."},
+  {id:"b",t:"o País Basco foi o único a fazer um referendo em 2017.",e:"O referendo de 2017 foi na Catalunha."},
+  {id:"c",t:"o basco é um idioma sem relação com nenhum outro da Europa Ocidental, e o grupo ETA usou a luta armada.",ok:true,e:"Língua própria e antiga; o ETA (anos 1950 a 2018) usou sequestros, carros-bomba e atentados."},
+  {id:"d",t:"a Catalunha fica no norte da Espanha e no sudoeste da França.",e:"Essa é a localização do País Basco; a Catalunha fica no leste da Espanha."}]},
+ {tema:"Cap. 18 · Reino Unido",p:"O IRA (Exército Republicano Irlandês) era um grupo:",alts:[
+  {id:"a",t:"protestante que lutava para manter a Irlanda do Norte no Reino Unido.",e:"O IRA era católico e contrário à permanência no Reino Unido."},
+  {id:"b",t:"basco, que lutava contra a ditadura de Franco.",e:"Esse é o ETA."},
+  {id:"c",t:"católico, contrário à permanência da Irlanda do Norte no Reino Unido, que deixou oficialmente de existir em 2005.",ok:true,e:"Depois disso, o partido Sinn Féin seguiu defendendo a saída de forma pacífica."},
+  {id:"d",t:"ligado à Al Qaeda e responsável pelo atentado de Madri em 2004.",e:"O atentado de Madri foi reivindicado pela Al Qaeda, não pelo IRA."}]}
+];
+
+/* ====== EMBARALHAMENTO COM SEMENTE FIXA (mulberry32) ====== */
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+var rnd=mulberry32(916230218);
+Q.forEach(function(q){ var arr=q.alts.slice(); for(var i=arr.length-1;i>0;i--){ var j=Math.floor(rnd()*(i+1)); var tmp=arr[i]; arr[i]=arr[j]; arr[j]=tmp; } q.ordem=arr; });
+
+/* ====== ESTADO ====== */
+var CHAVE=KIT+'_quiz_v1'; var mem={}; var estado=carregar();
+function carregar(){ try{ var s=localStorage.getItem(CHAVE); if(s) return JSON.parse(s);}catch(e){ if(mem[CHAVE]) return JSON.parse(mem[CHAVE]); } return {resp:{},enviado:false}; }
+function salvar(){ var s=JSON.stringify(estado); try{ localStorage.setItem(CHAVE,s);}catch(e){ mem[CHAVE]=s; } var d=new Date(); document.getElementById('salvo').textContent='💾 Salvo às '+d.toLocaleTimeString('pt-BR')+' de '+d.toLocaleDateString('pt-BR'); }
+var LETRAS='ABCDEFGHJKLMNPQRSTUVWXYZ';
+function gerarCodigo(ac){ var xx=(ac<10?'0':'')+ac; var yy=LETRAS[Math.floor(Math.random()*LETRAS.length)]+LETRAS[Math.floor(Math.random()*LETRAS.length)]; return 'MED-'+xx+'-'+yy; }
+
+function render(){
+  var c=document.getElementById('questoes'); var h='';
+  Q.forEach(function(q,i){
+    h+='<div class="q" id="q'+i+'"><span class="tema">'+q.tema+'</span><div class="num">Questão '+(i+1)+' de '+Q.length+'</div><h3>'+q.p+'</h3>';
+    q.ordem.forEach(function(a,k){
+      var letra='abcd'[k]; var sel=estado.resp[i]===a.id;
+      var cls='alt'+(sel?' sel':'');
+      if(estado.gabarito){ if(a.ok) cls+=' certa'; else if(sel) cls+=' marcada-errada'; else cls+=' errada'; }
+      h+='<label class="'+cls+'"><input type="radio" name="q'+i+'" value="'+a.id+'" '+(sel?'checked':'')+' '+(estado.enviado?'disabled':'')+' onchange="marcar('+i+',\''+a.id+'\')"> <b>'+letra+')</b> '+a.t;
+      if(estado.gabarito){ h+='<div class="exp show">'+(a.ok?'✅ ':'')+a.e+'</div>'; }
+      h+='</label>';
+    });
+    h+='</div>';
+  });
+  c.innerHTML=h;
+  atualizarBarra();
+  if(estado.enviado){ mostrarEnviado(); }
+  atualizarTrilhaFim();
+}
+function marcar(i,id){ if(estado.enviado) return; estado.resp[i]=id; salvar(); var q=document.getElementById('q'+i); var labs=q.querySelectorAll('.alt'); for(var k=0;k<labs.length;k++){ labs[k].classList.toggle('sel', labs[k].querySelector('input').value===id); } atualizarBarra(); }
+function atualizarBarra(){ var n=Object.keys(estado.resp).length; document.getElementById('barra').style.width=(n/Q.length*100)+'%'; var b=document.getElementById('btn-enviar'); if(!estado.enviado){ b.disabled=n<Q.length; b.textContent=n<Q.length?'📨 Enviar respostas ('+n+' de '+Q.length+' respondidas)':'📨 Enviar respostas'; } }
+function enviar(){
+  if(estado.enviado) return;
+  var ac=0; Q.forEach(function(q,i){ var a=q.alts.filter(function(x){return x.id===estado.resp[i];})[0]; if(a&&a.ok) ac++; });
+  estado.acertos=ac; estado.total=Q.length; estado.codigo=gerarCodigo(ac); estado.enviado=true; estado.concluido=true; estado.concluidoEm=new Date().toISOString();
+  salvar(); render(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function mostrarEnviado(){
+  var b=document.getElementById('btn-enviar'); b.disabled=true; b.textContent='✅ Quiz enviado — respostas travadas';
+  document.getElementById('codigo').classList.add('show'); document.getElementById('cod').textContent=estado.codigo;
+  document.getElementById('codtxt').textContent='Anote este código para os pais. Ele abre o gabarito comentado e o relatório no Início.';
+  document.getElementById('gab').classList.add('show');
+}
+function abrirGab(){ var v=document.getElementById('gab-in').value.trim().toUpperCase(); var m=document.getElementById('gab-msg'); if(v===estado.codigo||v==='PAIS-77'){ estado.gabarito=true; salvar(); render(); m.innerHTML='<span style="color:#8fe8c0">Gabarito liberado: '+estado.acertos+' acertos de '+Q.length+'.</span>'; } else { m.innerHTML='<span style="color:#ffb3b3">Código incorreto.</span>'; } }
+function atualizarTrilhaFim(){
+  var box=document.getElementById('trilha-fim'), txt=document.getElementById('trilha-fim-txt'), btn=document.getElementById('btn-prox'); var h3=box.querySelector('h3');
+  if(estado.concluido||trilhaLiberada()){ h3.textContent='✅ Quiz enviado — Resumo destravado!'; txt.textContent=estado.concluido?'Agora use o Resumo para fechar as dúvidas que o Quiz mostrou.':'Trilha liberada pelos pais.'; btn.classList.remove('off'); }
+  else { h3.textContent='🔒 Próxima etapa: Resumo'; txt.textContent='Destrava quando você enviar o Quiz.'; btn.classList.add('off'); }
+  marcarNav();
+}
+function exportar(){ var blob=new Blob([JSON.stringify(estado,null,2)],{type:'application/json'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='quiz_tabuleiro-do-poder.json'; a.click(); }
+function importar(ev){ var f=ev.target.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ try{ estado=JSON.parse(r.result); salvar(); render(); mostrarModal('✅ Progresso importado!',false);}catch(e){ mostrarModal('❌ Arquivo inválido.',false);} }; r.readAsText(f); }
+var acaoZerar=null;
+function pedirZerar(){ acaoZerar=true; mostrarModal('Apagar as respostas deste Quiz? (Se ele já foi enviado, o código e a conclusão são mantidos.)',true); }
+function mostrarModal(txt,confirmar){ document.getElementById('modal-txt').innerHTML=txt; document.getElementById('modal').classList.add('show'); document.getElementById('modal-cancel').style.display=confirmar?'inline-block':'none'; document.getElementById('modal-ok').textContent=confirmar?'Sim, apagar':'Ok';
+  document.getElementById('modal-ok').onclick=function(){ if(confirmar&&acaoZerar){ if(!estado.enviado){ estado={resp:{},enviado:false}; salvar(); render(); } else { mostrarModal('O Quiz já foi enviado: as respostas ficam travadas. Para refazer do zero, use "Zerar o kit inteiro" no Início.',false); acaoZerar=null; return; } } acaoZerar=null; fecharModal(); }; }
+function fecharModal(){ document.getElementById('modal').classList.remove('show'); }
+
+if(checarTrava()){ render(); } else { marcarNav(); }
+</script>
+</body>
+</html>

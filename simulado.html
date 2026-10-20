@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulado · Tabuleiro do Poder · Geografia 9º</title>
+<style>
+  :root{--palco:#10141c;--palco2:#171d28;--aco:#28324a;--aco2:#3a4766;--ambar:#f2b84b;--ciano:#38bdf8;--terra:#ff5d6c;--verde:#3ddc97;--vermelho:#e0403f;--azul:#13244a;--texto:#edf1f8;--cinza:#94a0b8}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:repeating-linear-gradient(45deg,rgba(255,255,255,.015) 0 22px,transparent 22px 44px),radial-gradient(1100px 480px at 50% -10%,#1d2740,#10141c 60%),var(--palco);color:var(--texto);line-height:1.6;padding-bottom:60px}
+  header{background:linear-gradient(120deg,#0e1a38,#13244a);padding:26px 18px;text-align:center;box-shadow:0 4px 18px rgba(0,0,0,.5);border-bottom:6px solid var(--vermelho)}
+  header .selo{font-size:.78rem;letter-spacing:2px;color:#c9d6f5;text-transform:uppercase}
+  header h1{font-size:1.5rem;margin:6px 0 2px}
+  header p{color:#dbe4fa;font-size:.92rem}
+  .wrap{max-width:820px;margin:0 auto;padding:16px}
+  .barra-nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+  .barra-nav a{background:var(--palco2);color:var(--texto);text-decoration:none;padding:7px 12px;border-radius:20px;font-size:.85rem;border:1px solid var(--aco)}
+  .barra-nav a.on{background:var(--vermelho);color:#fff;font-weight:bold}
+  .intro{background:var(--palco2);border:1px solid var(--aco);border-radius:14px;padding:16px;margin-bottom:16px}
+  .intro h2{color:#ff8a89;font-size:1.1rem;margin-bottom:8px}
+  .painel{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;background:var(--palco2);border:1px solid var(--aco);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:.85rem}
+  .painel .btns{display:flex;gap:6px;flex-wrap:wrap}
+  button{cursor:pointer;font-family:inherit}
+  .mini{background:var(--palco);color:var(--texto);border:1px solid var(--aco2);border-radius:8px;padding:6px 10px;font-size:.8rem}
+  .codigo{background:linear-gradient(120deg,#12261f,#1b4d3a);border:2px solid var(--verde);border-radius:14px;padding:16px;text-align:center;margin-bottom:16px;display:none}
+  .codigo.show{display:block}
+  .codigo .cod{font-size:1.8rem;font-weight:bold;letter-spacing:3px;color:#8fe8c0;margin:6px 0}
+  .progresso{height:10px;background:var(--aco);border-radius:6px;overflow:hidden;margin-bottom:16px}
+  .progresso div{height:100%;background:var(--vermelho);width:0;transition:width .3s}
+  .q{background:var(--palco2);border:1px solid var(--aco);border-radius:16px;padding:16px;margin-bottom:14px}
+  .q .num{color:#ff8a89;font-weight:bold;font-size:.8rem;letter-spacing:1px;text-transform:uppercase}
+  .q .tipo{float:right;font-size:.7rem;color:#fff;border-radius:10px;padding:2px 8px;background:#2a3a5a}
+  .q .tipo.som{background:#5a2a7a}.q .tipo.rom{background:#1f5a4a}.q .tipo.dis{background:#7a3a1a}
+  .q h3{font-size:1rem;margin:6px 0 10px;font-weight:600}
+  .afirm{background:#121722;border-left:3px solid var(--aco2);padding:8px 12px;margin:6px 0;border-radius:0 8px 8px 0;font-size:.93rem}
+  .afirm.ok{border-left-color:var(--verde)}.afirm.no{border-left-color:#777;color:#aaa}
+  .alt{display:block;background:#121722;border:1px solid var(--aco2);border-radius:10px;padding:10px 12px;margin:6px 0;cursor:pointer}
+  .alt:hover{border-color:#ff8a89}
+  .alt input{margin-right:8px}
+  .alt.sel{border-color:#ff8a89;background:#2a1620}
+  .alt.certa{border-color:var(--verde);background:#0e2b22}
+  .alt.errada{border-color:#555;background:#1a1e27;color:#aaa}
+  .alt.marcada-errada{border-color:var(--vermelho);background:#3a1414}
+  .exp{margin-top:8px;font-size:.88rem;padding:8px 10px;border-radius:8px;background:#121722;border-left:3px solid var(--ambar);display:none}
+  .exp.show{display:block}
+  .soma input{width:110px;padding:9px;border-radius:8px;border:1px solid var(--aco2);background:#0b0f17;color:var(--texto);font-size:1.05rem;text-align:center}
+  .soma .lab{font-size:.85rem;color:var(--cinza);margin-left:8px}
+  .q textarea{width:100%;min-height:110px;background:#0b0f17;color:var(--texto);border:1px solid var(--aco2);border-radius:8px;padding:9px;font-family:inherit;font-size:.95rem;margin-top:6px}
+  .modelo{display:none;margin-top:10px;padding:10px 12px;background:#0e2b22;border:1px solid var(--verde);border-radius:8px;font-size:.9rem}
+  .modelo.show{display:block}
+  .enviar{width:100%;background:var(--vermelho);color:#fff;border:none;border-radius:12px;padding:14px;font-size:1.05rem;font-weight:bold;margin:10px 0}
+  .enviar:disabled{background:#1c2436;color:#6c7891;cursor:not-allowed}
+  .gab{background:var(--palco2);border:1px dashed var(--ciano);border-radius:14px;padding:16px;margin:16px 0;display:none}
+  .gab.show{display:block}
+  .gab input{padding:9px;border-radius:8px;border:1px solid var(--aco2);background:#0b0f17;color:var(--texto);font-size:1rem;width:180px;text-transform:uppercase}
+  .gab button{background:var(--ciano);color:#031f2e;border:none;border-radius:8px;padding:9px 14px;font-weight:bold;margin-left:6px}
+  .gab .msg{margin-top:8px;font-size:.9rem}
+  .fim{background:linear-gradient(120deg,#12261f,#163a2c);border:2px solid var(--verde);border-radius:16px;padding:18px;margin-top:18px;text-align:center}
+  .fim h3{color:#8fe8c0;margin-bottom:8px}
+  .fim a{display:inline-block;margin-top:8px;background:var(--verde);color:#032418;text-decoration:none;font-weight:bold;padding:11px 20px;border-radius:10px}
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(8,10,16,.97);z-index:50;align-items:center;justify-content:center;padding:16px}
+  .modal-bg.show{display:flex}
+  .modal{background:var(--palco2);border:1px solid var(--ciano);border-radius:14px;padding:22px;max-width:440px;text-align:center}
+  .modal p{margin-bottom:14px}
+  .modal .big{font-size:2.2rem}
+  .modal a,.modal button{display:inline-block;background:var(--ciano);color:#031f2e;border:none;border-radius:8px;padding:10px 18px;font-weight:bold;text-decoration:none}
+  .rodape{text-align:center;color:var(--cinza);font-size:.8rem;margin-top:24px}
+</style>
+</head>
+<body>
+<header>
+  <div class="selo">Colégio Coração Feliz · Geografia · 9º ano</div>
+  <h1>📝 Simulado — Partida Final do Tabuleiro do Poder</h1>
+  <p>27 questões no estilo vestibular · múltipla escolha, somatório e números romanos · Capítulos 16, 17 e 18 · Código SIM</p>
+</header>
+
+<div class="wrap">
+  <nav class="barra-nav" id="nav">
+    <a href="leitura-guiada.html">📖 Leitura Guiada</a>
+    <a href="quiz.html">🎯 Quiz</a>
+    <a href="resumo.html">🗺️ Resumo</a>
+    <a class="on" href="simulado.html">📝 Simulado</a>
+    <a href="index.html">🏠 Início</a>
+  </nav>
+
+  <div class="codigo" id="codigo"><div>Seu código de liberação</div><div class="cod" id="cod"></div><div id="codtxt"></div></div>
+
+  <div class="intro">
+    <h2>📝 Valendo!</h2>
+    <p>Faça como se fosse a prova: <b>27 questões</b>, todas obrigatórias, no estilo vestibular. Nas de <b>somatório</b>, some os números das afirmativas corretas (ex.: se 01, 04 e 08 estão certas, digite 13). Nas de <b>números romanos</b>, leia as afirmativas I, II, III e IV e escolha a alternativa certa. Depois de enviar, as respostas travam e sai o código <b>SIM</b>.</p>
+  </div>
+
+  <div class="painel">
+    <span id="salvo">💾 Progresso salvo automaticamente.</span>
+    <div class="btns">
+      <button class="mini" onclick="exportar()">📥 Exportar</button>
+      <button class="mini" onclick="document.getElementById('imp').click()">📤 Importar</button>
+      <input type="file" id="imp" accept="application/json" style="display:none" onchange="importar(event)">
+      <button class="mini" onclick="pedirZerar()">🗑️ Zerar tudo</button>
+    </div>
+  </div>
+
+  <div class="progresso"><div id="barra"></div></div>
+  <div id="questoes"></div>
+  <button class="enviar" id="btn-enviar" onclick="enviar()" disabled>📨 Enviar simulado (responda todas)</button>
+
+  <div class="gab" id="gab">
+    <b>🔑 Gabarito comentado:</b> digite o código SIM que apareceu no topo.<br>
+    <input id="gab-in" placeholder="SIM-XX-YY"><button onclick="abrirGab()">Ver gabarito</button>
+    <div class="msg" id="gab-msg"></div>
+  </div>
+
+  <div class="fim" id="fim" style="display:none">
+    <h3>🏁 Trilha completa!</h3>
+    <p>Você percorreu os quatro materiais na ordem. Agora tudo fica aberto para revisar quantas vezes quiser até a prova.</p>
+    <a href="index.html">🏠 Voltar ao início</a>
+  </div>
+
+  <div class="rodape">Feito com carinho para o jovem aprendiz. ♟️ Boa prova!</div>
+</div>
+
+<div class="modal-bg" id="lock">
+  <div class="modal">
+    <div class="big">🔒</div>
+    <p><b>Esta etapa ainda está trancada.</b></p>
+    <p id="lock-txt">Para abrir o Simulado, leia o Resumo até o fim.</p>
+    <a href="index.html">Voltar ao início</a>
+  </div>
+</div>
+<div class="modal-bg" id="modal" style="background:rgba(0,0,0,.75)">
+  <div class="modal">
+    <p id="modal-txt"></p>
+    <button onclick="fecharModal()" id="modal-ok">Ok</button>
+    <button class="mini" onclick="fecharModal()" id="modal-cancel" style="display:none;margin-left:8px">Cancelar</button>
+  </div>
+</div>
+
+<script>
+/* ====== TRILHA COM CADEADOS (módulo comum do kit) ====== */
+var KIT='tabuleiro_poder_geo9';
+var TRILHA=[
+ {id:'leitura', chave:KIT+'_leitura_v1', nome:'Leitura Guiada', arquivo:'leitura-guiada.html', emoji:'📖'},
+ {id:'quiz', chave:KIT+'_quiz_v1', nome:'Quiz', arquivo:'quiz.html', emoji:'🎯'},
+ {id:'resumo', chave:KIT+'_resumo_v1', nome:'Resumo', arquivo:'resumo.html', emoji:'🗺️'},
+ {id:'simulado', chave:KIT+'_simulado_v1', nome:'Simulado', arquivo:'simulado.html', emoji:'📝'}
+];
+function lerJSON(k){ try{ var s=localStorage.getItem(k); return s?JSON.parse(s):null; }catch(e){ return null; } }
+function trilhaLiberada(){ var t=lerJSON(KIT+'_trilha_v1'); return !!(t&&t.liberadoPelosPais); }
+function etapaConcluida(id){ var e=TRILHA.filter(function(t){return t.id===id;})[0]; var d=lerJSON(e.chave); return !!(d&&d.concluido); }
+function podeAbrir(id){ var idx=TRILHA.map(function(t){return t.id;}).indexOf(id); if(idx<=0||trilhaLiberada()) return true; return etapaConcluida(TRILHA[idx-1].id); }
+function checarTrava(){
+  if(podeAbrir('simulado')) return true;
+  var txt='Para abrir o Simulado, leia o Resumo até o fim e clique em "Li o resumo até o fim".';
+  if(!etapaConcluida('quiz')) txt='Para abrir o Simulado, envie o Quiz e leia o Resumo até o fim.';
+  if(!etapaConcluida('leitura')) txt='Para abrir o Simulado, conclua a Leitura Guiada, envie o Quiz e leia o Resumo até o fim.';
+  document.getElementById('lock-txt').textContent=txt;
+  document.getElementById('lock').classList.add('show');
+  document.querySelector('.wrap').style.filter='blur(8px)';
+  document.querySelector('.wrap').setAttribute('aria-hidden','true');
+  return false;
+}
+
+/* ====== QUESTÕES (conteúdo do livro Callis Geografia 9 L2, Caps 16, 17 e 18) — correta guardada pelo id ====== */
+var Q=[
+ /* ---------- CAPÍTULO 16 ---------- */
+ {tipo:"mc",p:"Antes do dinheiro em papel, as sociedades usaram \"equivalentes universais\" para facilitar as trocas. Qual alternativa traz apenas exemplos citados pelo livro?",alts:[
+  {id:"a",t:"Sal, couro e metais preciosos como ouro, prata e bronze.",ok:true,e:"São os exemplos do livro; o importante era que não estragassem."},
+  {id:"b",t:"Ações, títulos e dividendos.",e:"Esses são instrumentos do mercado financeiro moderno."},
+  {id:"c",t:"Cédulas, cartões e cheques.",e:"Cédulas surgiram depois, no século XIX; cartões e cheques nem são citados."},
+  {id:"d",t:"Trigo, tecido e petróleo.",e:"Trigo e tecido são o exemplo de troca direta, não de equivalente universal."}]},
+ {tipo:"mc",p:"(Estilo vestibular) \"Dessa forma, em teoria, o governo só deveria imprimir mais dinheiro se conseguisse juntar mais ouro.\" No padrão-ouro, quando os países imprimiam mais dinheiro do que suas reservas garantiam, o resultado era:",alts:[
+  {id:"a",t:"a valorização da moeda nacional.",e:"Ocorria o contrário: desvalorização."},
+  {id:"b",t:"a criação do Banco Mundial.",e:"O Bird foi criado em Bretton Woods, em 1944."},
+  {id:"c",t:"a desvalorização da moeda e a perda da capacidade de compra, a inflação.",ok:true,e:"Dinheiro sem lastro suficiente compra menos: é a inflação."},
+  {id:"d",t:"o aumento das reservas de ouro do país.",e:"Imprimir papel não aumenta o ouro guardado."}]},
+ {tipo:"som",p:"Sobre a Conferência de Bretton Woods e suas instituições, some os números das afirmativas CORRETAS:",itens:[
+  {v:1,t:"Ocorreu no final de 1944 e reuniu os Estados Unidos e seus aliados na Segunda Guerra Mundial.",ok:true,e:"Correta."},
+  {v:2,t:"Estabeleceu o padrão dólar-ouro, no qual 35 dólares compravam uma onça de ouro.",ok:true,e:"Correta."},
+  {v:4,t:"Criou o euro como moeda de uso internacional.",e:"Errada: a moeda que virou de uso internacional foi o dólar; o euro vem de Maastricht (1992)."},
+  {v:8,t:"Criou o FMI, voltado a emprestar dinheiro a países em crise financeira e com elevado endividamento.",ok:true,e:"Correta."},
+  {v:16,t:"Criou o Bird, cuja finalidade original foi financiar a reconstrução do Japão e da Europa Ocidental.",ok:true,e:"Correta."}]},
+ {tipo:"rom",p:"Analise as afirmativas sobre as exigências do FMI aos países que recebem seus empréstimos:",itens:[
+  {n:"I",t:"Uma das condições é o corte de gastos, mesmo que atinja serviços públicos como educação e saúde.",ok:true,e:"Correta."},
+  {n:"II",t:"Outra condição é a abertura comercial e financeira, com menos limites à entrada e à saída de capital estrangeiro.",ok:true,e:"Correta."},
+  {n:"III",t:"Com menos controle sobre o sistema financeiro, os países ficam mais protegidos dos investimentos especulativos.",e:"Errada: ficam mais expostos a eles."},
+  {n:"IV",t:"Para atrair e manter investidores, muitos governos negociam títulos da dívida a juros altos.",ok:true,e:"Correta."}],
+  alts:[{id:"a",t:"Apenas I, II e IV.",ok:true,e:"Só a III é errada."},{id:"b",t:"Apenas I e III.",e:"A III é errada e faltam II e IV."},{id:"c",t:"Apenas II e III.",e:"A III é errada."},{id:"d",t:"I, II, III e IV.",e:"A III é errada."}]},
+ {tipo:"mc",p:"Uma fábrica de calçados precisa trocar suas máquinas, mas não tem todo o dinheiro. Ela recorre a um banco. Nessa situação, a fábrica e o banco pertencem, respectivamente, aos setores:",alts:[
+  {id:"a",t:"comercial e produtivo.",e:"A fábrica produz bens: é do setor produtivo."},
+  {id:"b",t:"financeiro e comercial.",e:"Está invertido e errado."},
+  {id:"c",t:"produtivo e comercial.",e:"O banco é do setor financeiro."},
+  {id:"d",t:"produtivo e financeiro.",ok:true,e:"Quem fabrica é do produtivo; quem empresta (crédito) é do financeiro."}]},
+ {tipo:"mc",p:"Sobre a história dos bancos, é correto afirmar que:",alts:[
+  {id:"a",t:"surgiram apenas no século XX, com a sociedade de consumo.",e:"Atividades bancárias existiam desde a Antiguidade; o banco moderno é dos séculos XV a XVIII."},
+  {id:"b",t:"o banco como conhecemos hoje surgiu no capitalismo comercial, entre os séculos XV e XVIII, em cidades como Veneza e Londres.",ok:true,e:"E ganhou força com as Grandes Navegações e a Revolução Industrial."},
+  {id:"c",t:"nunca tiveram relação com a Revolução Industrial.",e:"Os empréstimos bancários ajudaram nas três fases da Revolução Industrial."},
+  {id:"d",t:"sua única função sempre foi guardar dinheiro, sem fazer empréstimos.",e:"Com o tempo, passaram a emprestar parte do dinheiro guardado e a cobrar juros."}]},
+ {tipo:"som",p:"Sobre a Bolsa de Valores e os títulos da dívida pública, some os números das afirmativas CORRETAS:",itens:[
+  {v:1,t:"Ações são documentos que certificam a propriedade de uma fração de uma empresa.",ok:true,e:"Correta."},
+  {v:2,t:"O investidor em ações pode lucrar com dividendos e com a valorização das ações, sem correr nenhum risco.",e:"Errada: o investimento em ações é sempre uma opção de risco."},
+  {v:4,t:"Na bolha especulativa, os preços das ações ficam muito acima da realidade da empresa.",ok:true,e:"Correta."},
+  {v:8,t:"Quem compra um título da dívida pública está emprestando dinheiro ao governo.",ok:true,e:"Correta."},
+  {v:16,t:"Os juros dos títulos públicos são definidos pelas próprias corretoras de valores.",e:"Errada: são definidos pelo Banco Central de cada país."}]},
+ {tipo:"rom",p:"Analise as afirmativas sobre os paraísos fiscais:",itens:[
+  {n:"I",t:"São pequenos territórios — alguns Estados independentes, outros ilhas autônomas ligadas a grandes potências — com grande liberdade e segurança para investidores.",ok:true,e:"Correta."},
+  {n:"II",t:"Quanto maior o índice de opacidade de um paraíso fiscal, maior a transparência sobre a origem do dinheiro.",e:"Errada: maior opacidade = maior sigilo."},
+  {n:"III",t:"Favorecem a lavagem de dinheiro ligada à corrupção, ao crime organizado e à evasão fiscal.",ok:true,e:"Correta."},
+  {n:"IV",t:"Os paraísos fiscais são grandes potências econômicas, como os Estados Unidos e a China.",e:"Errada: são pequenos territórios (Estados independentes ou ilhas autônomas)."}],
+  alts:[{id:"a",t:"Apenas I e III.",ok:true,e:"II e IV são erradas."},{id:"b",t:"Apenas I, III e IV.",e:"A IV é errada."},{id:"c",t:"Apenas II e IV.",e:"Essas são justamente as erradas."},{id:"d",t:"Apenas II.",e:"A II é errada; I e III são corretas."}]},
+ {tipo:"mc",p:"(Adaptada de PUC-Campinas) Um mapa mostra as bolsas de valores do mundo, com grande concentração na América do Norte, na Europa Ocidental e no Leste da Ásia. Uma conclusão correta a partir dele é:",alts:[
+  {id:"a",t:"as crises financeiras acabaram com as bolsas de valores do mundo.",e:"O mapa mostra bolsas em funcionamento."},
+  {id:"b",t:"não existem mais diferenças entre países centrais e periféricos.",e:"A concentração mostra justamente a diferença."},
+  {id:"c",t:"as maiores concentrações de bolsas ocorrem nas áreas de maior dinamismo econômico.",ok:true,e:"Essa é a resposta da questão do livro: as bolsas se concentram onde a economia é mais dinâmica."},
+  {id:"d",t:"apenas Brasil e México, entre os emergentes, têm bolsas.",e:"O mapa mostra bolsas em outros emergentes também."}]},
+
+ /* ---------- CAPÍTULO 17 ---------- */
+ {tipo:"mc",p:"A expressão \"exterior próximo\", usada pelos russos, refere-se:",alts:[
+  {id:"a",t:"aos países da Zona do Euro.",e:"Não tem relação com o euro."},
+  {id:"b",t:"ao território dominado pelo Império Russo, depois pela ex-URSS e hoje, em parte, comandado pela Rússia.",ok:true,e:"É a área de influência que a Rússia tenta manter."},
+  {id:"c",t:"às colônias russas na América.",e:"O livro não fala disso."},
+  {id:"d",t:"aos países que formam os BRICS.",e:"BRICS são Brasil, Rússia, Índia, China e África do Sul."}]},
+ {tipo:"som",p:"Sobre a Rússia e seu entorno, some os números das afirmativas CORRETAS:",itens:[
+  {v:1,t:"No regime de Stálin, grandes grupos populacionais foram deslocados, o que fortaleceu a presença de russos em outras repúblicas soviéticas.",ok:true,e:"Correta."},
+  {v:2,t:"Há minorias russas em países como Cazaquistão, Uzbequistão, Moldávia, Belarus e Ucrânia.",ok:true,e:"Correta."},
+  {v:4,t:"Letônia, Estônia, Lituânia, Polônia, Hungria e Bulgária ingressaram na União Europeia e na OTAN.",ok:true,e:"Correta."},
+  {v:8,t:"O Mar Negro é um mar aberto, sem ligação com o Mediterrâneo.",e:"Errada: é semifechado e liga-se ao Mediterrâneo pelos estreitos de Bósforo e Dardanelos."},
+  {v:16,t:"Após 1991, a Rússia nunca se recuperou economicamente e ficou fora dos BRICS.",e:"Errada: retomou o crescimento neste século e integra os BRICS."}]},
+ {tipo:"mc",p:"Entre os motivos da ofensiva russa na Primeira Guerra da Chechênia (1994), o livro NÃO cita:",alts:[
+  {id:"a",t:"o controle de oleodutos e gasodutos da região.",e:"Esse motivo é citado."},
+  {id:"b",t:"a busca de inimigos externos para a população esquecer os problemas internos.",e:"Esse motivo é citado (o país estava em recessão)."},
+  {id:"c",t:"a preocupação com os efeitos da independência chechena em outras partes da Rússia.",e:"Esse motivo é citado."},
+  {id:"d",t:"a necessidade de adotar o euro para pagar a guerra.",ok:true,e:"Esse motivo não existe: a Rússia não usa o euro."}]},
+ {tipo:"rom",p:"Analise as afirmativas sobre a questão da Chechênia:",itens:[
+  {n:"I",t:"A Primeira Guerra da Chechênia ocorreu no governo de Boris Yeltsin; em 1996, as tropas russas sofreram uma grande derrota.",ok:true,e:"Correta."},
+  {n:"II",t:"O território checheno possui reservas de petróleo, o que gera grande interesse por parte da Rússia.",ok:true,e:"Correta."},
+  {n:"III",t:"A Segunda Guerra começou em 1999, após atentados a prédios em Moscou, e foi conduzida por Vladimir Putin.",ok:true,e:"Correta."},
+  {n:"IV",t:"Após a vitória russa, separatistas chechenos passaram a usar ações terroristas, como em Dubrovka (2002) e Beslan (2004).",ok:true,e:"Correta."}],
+  alts:[{id:"a",t:"I, II, III e IV.",ok:true,e:"Todas as afirmativas são corretas."},{id:"b",t:"Apenas I e III.",e:"II e IV também são corretas."},{id:"c",t:"Apenas I, II e IV.",e:"A III também é correta."},{id:"d",t:"Apenas III e IV.",e:"I e II também são corretas."}]},
+ {tipo:"mc",p:"(Adaptada de UFJF-MG) A disputa entre Rússia e Ucrânia pela Crimeia se agravou em 2014. Sobre a península, é correto afirmar que:",alts:[
+  {id:"a",t:"foi transferida da Ucrânia para a Rússia por Kruschev em 1954.",e:"Em 1954 Kruschev transferiu a Crimeia para a Ucrânia."},
+  {id:"b",t:"tem população majoritariamente ucraniana e católica.",e:"A maior parte da população é russa."},
+  {id:"c",t:"é estratégica para a Rússia por seus gasodutos e para a Ucrânia por dar saída ao Mar Negro.",ok:true,e:"Por isso as duas disputam a península."},
+  {id:"d",t:"teve sua anexação à Rússia reconhecida pelos EUA e pela União Europeia.",e:"O referendo de 2014 não foi reconhecido por eles."}]},
+ {tipo:"som",p:"Sobre a crise na Ucrânia, some os números das afirmativas CORRETAS:",itens:[
+  {v:1,t:"Em 2013, o presidente Viktor Yanukovych desistiu de assinar um acordo com a União Europeia, sob pressão de Putin.",ok:true,e:"Correta."},
+  {v:2,t:"No referendo de março de 2014, mais de 96% dos votantes da Crimeia apoiaram a anexação à Rússia.",ok:true,e:"Correta."},
+  {v:4,t:"Como sanção, a Rússia foi retirada do G8.",ok:true,e:"Correta."},
+  {v:8,t:"Em 2014, separatistas proclamaram a independência de Donetsk, no oeste da Ucrânia, perto da Polônia.",e:"Errada: Donetsk fica no leste da Ucrânia."},
+  {v:16,t:"Em 24 de fevereiro de 2022, a Rússia invadiu a Ucrânia.",ok:true,e:"Correta."}]},
+ {tipo:"mc",p:"Segundo o livro, os dois aspectos em comum entre os conflitos na Crimeia e em Donetsk são:",alts:[
+  {id:"a",t:"a adoção do euro pela Ucrânia e a saída da Rússia dos BRICS.",e:"Nenhum dos dois aconteceu."},
+  {id:"b",t:"a possível aproximação da Ucrânia com a União Europeia e a presença de gás natural e gasodutos importantes para a Rússia.",ok:true,e:"É o que o livro chama de aspectos em comum."},
+  {id:"c",t:"a religião muçulmana sunita e as reservas de petróleo.",e:"Essas características são da Chechênia."},
+  {id:"d",t:"o Brexit e a crise grega.",e:"São temas da Europa Ocidental."}]},
+ {tipo:"rom",p:"Analise as afirmativas sobre a crise na Zona do Euro:",itens:[
+  {n:"I",t:"O Tratado de Maastricht (1992) exigia déficit orçamentário abaixo de 3% do PIB e dívida pública de no máximo 60% do PIB para adotar o euro.",ok:true,e:"Correta."},
+  {n:"II",t:"Os países da Zona do Euro tinham economias muito parecidas, o que facilitou a integração.",e:"Errada: havia muitas diferenças econômicas e políticas (ex.: Alemanha × Portugal)."},
+  {n:"III",t:"A crise econômica de 2008 começou nos Estados Unidos e aprofundou o déficit e a dívida de países como Portugal, Itália, Irlanda, Grécia e Espanha.",ok:true,e:"Correta."},
+  {n:"IV",t:"A Grécia tornou-se o maior símbolo da crise, depois que se revelou que o governo escondia a real situação do déficit.",ok:true,e:"Correta."}],
+  alts:[{id:"a",t:"Apenas I, III e IV.",ok:true,e:"Só a II é errada."},{id:"b",t:"Apenas I e II.",e:"A II é errada."},{id:"c",t:"Apenas II e IV.",e:"A II é errada."},{id:"d",t:"I, II, III e IV.",e:"A II é errada."}]},
+ {tipo:"mc",p:"As exigências feitas à Grécia pelo FMI, pelo Banco Central Europeu e pela Comissão Europeia — redução de salários públicos, aposentadorias e pensões, privatizações e demissões — caracterizam uma política de:",alts:[
+  {id:"a",t:"austeridade.",ok:true,e:"Austeridade é, basicamente, o corte de gastos públicos."},
+  {id:"b",t:"inflação.",e:"Inflação é a perda da capacidade de compra."},
+  {id:"c",t:"especulação.",e:"Especulação é apostar na alta de preços sem base real."},
+  {id:"d",t:"evasão fiscal.",e:"Evasão fiscal é fugir de impostos."}]},
+ {tipo:"mc",p:"(Adaptada de UFJF-PISM) Após o Brexit, o Reino Unido enfrentou falta de motoristas e de trabalhadores na agroindústria. A explicação coerente com o tema é que:",alts:[
+  {id:"a",t:"o Reino Unido deixou de usar o euro e a libra perdeu valor.",e:"O Reino Unido nunca usou o euro."},
+  {id:"b",t:"o Brexit dificultou a entrada de imigrantes, o que causou falta de trabalhadores em setores como transportes e agroindústria.",ok:true,e:"É a alternativa correta da questão do livro."},
+  {id:"c",t:"a Escócia se separou do Reino Unido logo após o referendo.",e:"A Escócia continua no Reino Unido."},
+  {id:"d",t:"o Reino Unido entrou para o Acordo de Schengen.",e:"Ele não faz parte de Schengen."}]},
+
+ /* ---------- CAPÍTULO 18 ---------- */
+ {tipo:"som",p:"Sobre a formação dos Estados nacionais europeus, some os números das afirmativas CORRETAS:",itens:[
+  {v:1,t:"A organização do território europeu em países, como hoje, começou e se expandiu nos séculos XIX e XX.",ok:true,e:"Correta."},
+  {v:2,t:"Antes disso predominavam governos absolutistas, formados basicamente por reinos e impérios.",ok:true,e:"Correta."},
+  {v:4,t:"Com a Revolução Francesa (1789), ganhou força a ideia de que o governo deve praticar a vontade da nação.",ok:true,e:"Correta."},
+  {v:8,t:"Existe uma regra geral e fixa que define quando um grupo humano se torna uma nação.",e:"Errada: o livro diz que não há regra geral; o principal elo são as próprias pessoas."},
+  {v:16,t:"Os microestados, como Mônaco e Vaticano, são pequenas unidades territoriais que se mantiveram ao longo da história.",ok:true,e:"Correta."}]},
+ {tipo:"mc",p:"Segundo o capítulo, entre os elementos que contribuem para a formação do sentimento de identidade nacional, o PRINCIPAL é:",alts:[
+  {id:"a",t:"as tradições e a história comum que as pessoas compartilham.",ok:true,e:"O livro cita idioma e cultura e destaca 'principalmente' as tradições e a história comum."},
+  {id:"b",t:"o tamanho do território.",e:"O tamanho não aparece como elemento de identidade."},
+  {id:"c",t:"a moeda usada pelo país.",e:"A moeda não é citada como elemento da nação."},
+  {id:"d",t:"a participação na OTAN.",e:"Não tem relação com identidade nacional."}]},
+ {tipo:"rom",p:"Analise as afirmativas sobre a fragmentação da Iugoslávia:",itens:[
+  {n:"I",t:"O nome \"Iugoslávia\", dado em 1929, significa terra dos eslavos do sul e buscava criar uma identidade nacional.",ok:true,e:"Correta."},
+  {n:"II",t:"A diversidade religiosa da região se explica, em grande parte, por ela ter integrado os impérios Austro-Húngaro (católico) e Turco-Otomano (muçulmano).",ok:true,e:"Correta."},
+  {n:"III",t:"Tito manteve a unidade por meio de autonomia regional, do ideal socialista e de um regime de ditadura.",ok:true,e:"Correta."},
+  {n:"IV",t:"A Guerra da Bósnia (1992-1995) foi um conflito rápido e sem vítimas, resolvido por um referendo.",e:"Errada: deixou cerca de 200 mil mortos e quase 2 milhões de refugiados."}],
+  alts:[{id:"a",t:"Apenas I e IV.",e:"A IV é errada."},{id:"b",t:"Apenas I, II e III.",ok:true,e:"Só a IV é errada."},{id:"c",t:"Apenas II e IV.",e:"A IV é errada."},{id:"d",t:"Apenas III.",e:"I e II também são corretas."}]},
+ {tipo:"mc",p:"(Adaptada de IFSP) Na extinta Iugoslávia, ao longo dos anos 1990, ocorreu a desintegração do território. Durante e após os conflitos, surgiram os seguintes países:",alts:[
+  {id:"a",t:"Luxemburgo, Croácia, Macedônia, Montenegro, Bósnia, Sérvia e Kosovo.",e:"Luxemburgo não fazia parte da Iugoslávia."},
+  {id:"b",t:"Finlândia, Lituânia, Macedônia, Montenegro, Bósnia, Sérvia e Kosovo.",e:"Finlândia e Lituânia não faziam parte da Iugoslávia."},
+  {id:"c",t:"Estônia, Croácia, Macedônia, Montenegro, Bósnia, Sérvia e Kosovo.",e:"A Estônia não fazia parte da Iugoslávia."},
+  {id:"d",t:"Eslovênia, Croácia, Macedônia, Montenegro, Bósnia, Sérvia e Kosovo.",ok:true,e:"É a resposta da questão do livro (com o Kosovo, que declarou independência)."}]},
+ {tipo:"som",p:"Sobre os movimentos separatistas na Espanha, some os números das afirmativas CORRETAS:",itens:[
+  {v:1,t:"A Catalunha fica no leste da Espanha e é a região que mais produz riqueza no país.",ok:true,e:"Correta."},
+  {v:2,t:"Em 2017, o governo de Madri organizou e reconheceu o referendo de independência da Catalunha.",e:"Errada: Madri proibiu o referendo e não reconheceu a independência."},
+  {v:4,t:"Os bascos falam um idioma próprio, sem relação com nenhuma outra língua da Europa Ocidental.",ok:true,e:"Correta."},
+  {v:8,t:"O ETA surgiu na década de 1950 e usou sequestros e carros-bomba; em 2018, anunciou o fim do grupo.",ok:true,e:"Correta."},
+  {v:16,t:"A ditadura de Francisco Franco (1939-1975) ampliou a autonomia das regiões espanholas.",e:"Errada: Franco negou autonomia às regiões."}]},
+ {tipo:"mc",p:"(Adaptada de UFJF-MG) Sobre o Brexit e o Reino Unido, assinale a alternativa correta:",alts:[
+  {id:"a",t:"Implicou a saída do Reino Unido da Zona do Euro e a volta da libra.",e:"O Reino Unido nunca esteve na Zona do Euro."},
+  {id:"b",t:"Foi motivado por separatistas escoceses que queriam deixar o Reino Unido.",e:"A Escócia votou para permanecer na UE."},
+  {id:"c",t:"Pode reacender movimentos separatistas na Escócia e na Irlanda do Norte, que votaram para permanecer na União Europeia.",ok:true,e:"Elas foram forçadas a sair da UE só por fazerem parte do Reino Unido."},
+  {id:"d",t:"Transformou o Reino Unido em membro do Acordo de Schengen.",e:"O Reino Unido não faz parte de Schengen."}]},
+ {tipo:"rom",p:"Analise as afirmativas sobre o terrorismo na Europa:",itens:[
+  {n:"I",t:"O IRA atuava no País Basco, e o ETA, na Irlanda do Norte.",e:"Errada: está trocado — o ETA é do País Basco e o IRA, da Irlanda do Norte."},
+  {n:"II",t:"Após os atentados de 11 de setembro de 2001, países europeus que apoiaram a política externa dos EUA sofreram retaliações da Al Qaeda e do Estado Islâmico.",ok:true,e:"Correta."},
+  {n:"III",t:"Todos os atentados recentes na Europa foram cometidos por imigrantes e tiveram motivação religiosa.",e:"Errada: alguns autores eram cidadãos europeus; na Noruega (2011), o autor era ligado a movimentos ultraconservadores, sem vínculo religioso."},
+  {n:"IV",t:"Alguns atentados contribuíram para o aumento da xenofobia na Europa.",ok:true,e:"Correta."}],
+  alts:[{id:"a",t:"Apenas I e III.",e:"I e III são as erradas."},{id:"b",t:"Apenas III e IV.",e:"A III é errada."},{id:"c",t:"Apenas I, II e IV.",e:"A I é errada."},{id:"d",t:"Apenas II e IV.",ok:true,e:"I e III são erradas."}]},
+ {tipo:"mc",p:"O IRA (Exército Republicano Irlandês) era um grupo:",alts:[
+  {id:"a",t:"protestante, que defendia a permanência da Irlanda do Norte no Reino Unido.",e:"Era católico e contrário à permanência."},
+  {id:"b",t:"católico, contrário à permanência da Irlanda do Norte no Reino Unido; deixou oficialmente de existir em 2005.",ok:true,e:"Depois, o partido Sinn Féin passou a defender a saída de forma pacífica."},
+  {id:"c",t:"basco, que lutava contra a ditadura de Franco.",e:"Esse é o ETA."},
+  {id:"d",t:"checheno, responsável pelo ataque à escola de Beslan.",e:"Beslan foi um ataque de separatistas chechenos."}]}
+];
+
+/* ====== EMBARALHAMENTO COM SEMENTE FIXA (mulberry32) — correta guardada pelo id ====== */
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+var rnd=mulberry32(523917846);
+Q.forEach(function(q){ if(q.alts){ var arr=q.alts.slice(); for(var i=arr.length-1;i>0;i--){ var j=Math.floor(rnd()*(i+1)); var tmp=arr[i]; arr[i]=arr[j]; arr[j]=tmp; } q.ordem=arr; } if(q.tipo==='som'){ q.soma=q.itens.filter(function(x){return x.ok;}).reduce(function(a,x){return a+x.v;},0); } });
+var OBJ=Q.filter(function(q){return q.tipo!=='dis';}).length;
+
+/* ====== ESTADO ====== */
+var CHAVE=KIT+'_simulado_v1'; var mem={}; var estado=carregar();
+function carregar(){ try{ var s=localStorage.getItem(CHAVE); if(s) return JSON.parse(s);}catch(e){ if(mem[CHAVE]) return JSON.parse(mem[CHAVE]); } return {resp:{},enviado:false}; }
+function salvar(){ var s=JSON.stringify(estado); try{ localStorage.setItem(CHAVE,s);}catch(e){ mem[CHAVE]=s; } var d=new Date(); document.getElementById('salvo').textContent='💾 Salvo às '+d.toLocaleTimeString('pt-BR')+' de '+d.toLocaleDateString('pt-BR'); }
+var LETRAS='ABCDEFGHJKLMNPQRSTUVWXYZ';
+function gerarCodigo(ac){ var xx=(ac<10?'0':'')+ac; var yy=LETRAS[Math.floor(Math.random()*LETRAS.length)]+LETRAS[Math.floor(Math.random()*LETRAS.length)]; return 'SIM-'+xx+'-'+yy; }
+function respondida(i){ var q=Q[i], r=estado.resp[i]; if(r===undefined||r===null||r==='') return false; if(q.tipo==='dis') return String(r).trim().length>=3; return true; }
+function acertou(i){ var q=Q[i], r=estado.resp[i]; if(q.tipo==='som') return parseInt(r,10)===q.soma; if(q.tipo==='dis') return null; var a=q.alts.filter(function(x){return x.id===r;})[0]; return !!(a&&a.ok); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+function render(){
+  var c=document.getElementById('questoes'); var h=''; var G=estado.gabarito;
+  Q.forEach(function(q,i){
+    var tipoTxt={mc:'Múltipla escolha',som:'Somatório',rom:'Números romanos',dis:'Discursiva'}[q.tipo];
+    h+='<div class="q" id="q'+i+'"><span class="tipo '+q.tipo+'">'+tipoTxt+'</span><div class="num">Questão '+(i+1)+' de '+Q.length+'</div><h3>'+q.p+'</h3>';
+    if(q.tipo==='som'||q.tipo==='rom'){
+      q.itens.forEach(function(it){ var lab=q.tipo==='som'? ('('+(it.v<10?'0':'')+it.v+') ') : (it.n+'. '); var cls='afirm'+(G?(it.ok?' ok':' no'):''); h+='<div class="'+cls+'">'+lab+it.t+(G?'<div class="exp show">'+(it.ok?'✅ ':'❌ ')+it.e+'</div>':'')+'</div>'; });
+    }
+    if(q.tipo==='som'){
+      var r=estado.resp[i]; var ok=G?acertou(i):null;
+      h+='<div class="soma" style="margin-top:10px">Soma: <input type="number" min="0" max="31" id="som'+i+'" value="'+(r!==undefined?esc(r):'')+'" '+(estado.enviado?'disabled':'')+' oninput="marcar('+i+',this.value)"><span class="lab">'+(G?(ok?'✅ Correto: '+q.soma:'❌ Você somou '+esc(r)+'; o certo é '+q.soma):'')+'</span></div>';
+    } else if(q.tipo==='dis'){
+      h+='<textarea id="dis'+i+'" '+(estado.enviado?'disabled':'')+' oninput="marcar('+i+',this.value)" placeholder="Escreva aqui com as suas palavras…">'+esc(estado.resp[i]||'')+'</textarea>';
+      h+='<div class="modelo'+(G?' show':'')+'">'+q.modelo+'</div>';
+    } else {
+      q.ordem.forEach(function(a,k){
+        var letra='abcd'[k]; var sel=estado.resp[i]===a.id; var cls='alt'+(sel?' sel':'');
+        if(G){ if(a.ok) cls+=' certa'; else if(sel) cls+=' marcada-errada'; else cls+=' errada'; }
+        h+='<label class="'+cls+'"><input type="radio" name="q'+i+'" value="'+a.id+'" '+(sel?'checked':'')+' '+(estado.enviado?'disabled':'')+' onchange="marcar('+i+',\''+a.id+'\')"> <b>'+letra+')</b> '+a.t+(G?'<div class="exp show">'+(a.ok?'✅ ':'')+a.e+'</div>':'')+'</label>';
+      });
+    }
+    h+='</div>';
+  });
+  c.innerHTML=h; atualizarBarra(); if(estado.enviado) mostrarEnviado();
+}
+function marcar(i,v){ if(estado.enviado) return; estado.resp[i]=v; salvar(); var q=document.getElementById('q'+i); if(Q[i].tipo==='mc'||Q[i].tipo==='rom'){ var labs=q.querySelectorAll('.alt'); for(var k=0;k<labs.length;k++){ labs[k].classList.toggle('sel', labs[k].querySelector('input').value===v); } } atualizarBarra(); }
+function atualizarBarra(){ var n=0; Q.forEach(function(q,i){ if(respondida(i)) n++; }); document.getElementById('barra').style.width=(n/Q.length*100)+'%'; var b=document.getElementById('btn-enviar'); if(!estado.enviado){ b.disabled=n<Q.length; b.textContent=n<Q.length?'📨 Enviar simulado ('+n+' de '+Q.length+' respondidas)':'📨 Enviar simulado'; } }
+function enviar(){
+  if(estado.enviado) return;
+  var ac=0; Q.forEach(function(q,i){ if(acertou(i)===true) ac++; });
+  estado.acertos=ac; estado.objetivas=OBJ; estado.codigo=gerarCodigo(ac); estado.enviado=true; estado.concluido=true; estado.concluidoEm=new Date().toISOString();
+  salvar(); render(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function mostrarEnviado(){
+  var b=document.getElementById('btn-enviar'); b.disabled=true; b.textContent='✅ Simulado enviado — respostas travadas';
+  document.getElementById('codigo').classList.add('show'); document.getElementById('cod').textContent=estado.codigo;
+  document.getElementById('codtxt').textContent='Anote este código para os pais. Ele abre o gabarito comentado.';
+  document.getElementById('gab').classList.add('show'); document.getElementById('fim').style.display='block';
+}
+function abrirGab(){ var v=document.getElementById('gab-in').value.trim().toUpperCase(); var m=document.getElementById('gab-msg'); if(v===estado.codigo||v==='PAIS-77'){ estado.gabarito=true; salvar(); render(); m.innerHTML='<span style="color:#8fe8c0">Gabarito liberado: '+estado.acertos+' acertos de '+OBJ+' questões.</span>'; } else { m.innerHTML='<span style="color:#ffb3b3">Código incorreto.</span>'; } }
+function exportar(){ var blob=new Blob([JSON.stringify(estado,null,2)],{type:'application/json'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='simulado_tabuleiro-do-poder.json'; a.click(); }
+function importar(ev){ var f=ev.target.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ try{ estado=JSON.parse(r.result); salvar(); render(); mostrarModal('✅ Progresso importado!',false);}catch(e){ mostrarModal('❌ Arquivo inválido.',false);} }; r.readAsText(f); }
+var acaoZerar=null;
+function pedirZerar(){ acaoZerar=true; mostrarModal('Apagar as respostas deste Simulado? (Se ele já foi enviado, o código e a conclusão são mantidos.)',true); }
+function mostrarModal(txt,confirmar){ document.getElementById('modal-txt').innerHTML=txt; document.getElementById('modal').classList.add('show'); document.getElementById('modal-cancel').style.display=confirmar?'inline-block':'none'; document.getElementById('modal-ok').textContent=confirmar?'Sim, apagar':'Ok';
+  document.getElementById('modal-ok').onclick=function(){ if(confirmar&&acaoZerar){ if(!estado.enviado){ estado={resp:{},enviado:false}; salvar(); render(); } else { mostrarModal('O Simulado já foi enviado: as respostas ficam travadas. Para refazer do zero, use "Zerar o kit inteiro" no Início.',false); acaoZerar=null; return; } } acaoZerar=null; fecharModal(); }; }
+function fecharModal(){ document.getElementById('modal').classList.remove('show'); }
+
+if(checarTrava()){ render(); }
+</script>
+</body>
+</html>
